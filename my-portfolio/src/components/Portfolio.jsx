@@ -15,9 +15,9 @@ const portfolioItems = [
     category: 'HTML5 CSS3 Bootstrap ReactJS',
   },
   {
-    slug: 'project-two',
+    slug: 'iron-man',
     image: stock1,
-    title: 'Project Two',
+    title: 'Iron Man Helmet',
     category: 'HTML5 CSS3 Bootstrap Webpack SmoothScrolling VanillaJS',
   },
   {

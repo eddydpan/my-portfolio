@@ -1,0 +1,15 @@
+@keyframes text-scroll {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.text-scroller {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: text-scroll 10s linear infinite;
+}

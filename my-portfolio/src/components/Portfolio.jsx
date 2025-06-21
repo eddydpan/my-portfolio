@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, useInView } from 'framer-motion';
+
 import stock from '../assets/project1.png';
 import stock1 from '../assets/project2.png';
 import stock2 from '../assets/project3.png';
@@ -65,8 +67,18 @@ const PortfolioItem = ({ slug, image, title, category }) => (
 );
 
 export default function Portfolio({ id }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-50px' });
+
   return (
-    <section id={id} className="py-12 bg-gray-100">
+    <motion.section
+      id={id}
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className="py-12 bg-gray-100 relative"
+    >
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h3 className="text-3xl font-bold text-gray-800">Portfolio</h3>
@@ -87,6 +99,6 @@ export default function Portfolio({ id }) {
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

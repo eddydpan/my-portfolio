@@ -1,8 +1,23 @@
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import profilePicture from '../assets/profile.jpg';
+import TrianglesBackground from './TrianglesBackground';
 
 export default function AboutSection({ id }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-50px' });
+
   return (
-    <div id={id} className="flex flex-col md:flex-row items-center justify-center min-h-screen px-6 bg-gray-100 text-gray-800">
+    <motion.section
+      id={id}
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className="flex flex-col md:flex-row items-center justify-center min-h-screen px-6 bg-gray-100 text-gray-800 relative"
+    >
+      {/* Background Triangles */}
+      <TrianglesBackground  count={10}/>
       {/* About text */}
       <div className="md:w-5/8 w-full md:pr-8 mb-8 md:mb-0">
         <h2 className="text-4xl font-bold mb-4">About Me</h2>
@@ -23,6 +38,6 @@ export default function AboutSection({ id }) {
           className="rounded-full w-48 h-48 object-cover shadow-lg"
         />
       </div>
-    </div>
+    </motion.section>
   );
 }

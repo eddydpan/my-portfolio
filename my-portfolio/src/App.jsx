@@ -1,31 +1,61 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AnimatedLayout from './AnimatedLayout';
+
 import LandingPage from './components/LandingPage';
 import AboutSection from './components/AboutSection';
 import Portfolio from './components/Portfolio';
 import BettaFishChessPlayerSubpage from './components/subpages/projects/BettaFishChessPlayerSubpage';
 import IronManSubpage from './components/subpages/projects/IronManSubpage';
 
-export default function App() {
+function App() {
   return (
     <Router>
-      <div className="App">
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <LandingPage />
-                <AboutSection id="about" />
-                <Portfolio id="portfolio" />
-              </>
-            }
-          />
-          <Route path="/about" element={<AboutSection />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/portfolio/bettafish-chess-player" element={<BettaFishChessPlayerSubpage />} />
-          <Route path="/portfolio/iron-man" element={<IronManSubpage />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <AnimatedLayout>
+              <LandingPage />
+              <AboutSection id="about" />
+              <Portfolio id="portfolio" />
+            </AnimatedLayout>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <AnimatedLayout>
+              <AboutSection />
+            </AnimatedLayout>
+          }
+        />
+        <Route
+          path="/portfolio"
+          element={
+            <AnimatedLayout>
+              <Portfolio />
+            </AnimatedLayout>
+          }
+        />
+        <Route
+          path="/portfolio/bettafish-chess-player"
+          element={
+            <AnimatedLayout>
+              <BettaFishChessPlayerSubpage />
+            </AnimatedLayout>
+          }
+        />
+        <Route
+          path="/portfolio/iron-man"
+          element={
+            <AnimatedLayout>
+              <IronManSubpage />
+            </AnimatedLayout>
+          }
+        />
+      </Routes>
     </Router>
   );
 }
+
+export default App;

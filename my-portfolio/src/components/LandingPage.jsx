@@ -2,9 +2,16 @@ import { useEffect, useRef } from 'react';
 import { HashLink } from 'react-router-hash-link';
 import { autoTyper } from '../utils/autoTyper';
 import backgroundGif from '../assets/background.gif';
+import { motion } from 'motion/react';
 
 export default function LandingPage() {
   const typerRef = useRef(null);
+
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.95 },
+  };
 
   useEffect(() => {
     if (typerRef.current) {
@@ -13,7 +20,14 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      transition={{ duration: 0.5 }}
+      className="relative min-h-screen overflow-hidden"
+    >
       {/* Background GIF */}
       <img
         src={backgroundGif}
@@ -55,6 +69,6 @@ export default function LandingPage() {
       <style>
         {`.wrap { border-right: 0.08em solid #666; }`}
       </style>
-    </div>
+    </motion.div>
   );
 }

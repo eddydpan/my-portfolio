@@ -28,12 +28,14 @@ export default function BaseSubpage({ title, intro, galleryImages, customDescrip
 
           {/* Learn More Link */}
           {learnMoreLink && (
-            <Link
-              to={learnMoreLink}
+            <a
+              href={learnMoreLink}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-block px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition mt-6"
             >
-              Learn More
-            </Link>
+              More Information
+            </a>
           )}
         </div>
       </div>

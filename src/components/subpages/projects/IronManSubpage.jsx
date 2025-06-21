@@ -21,11 +21,14 @@ export default function IronManSubpage() {
 
   return (
     <BaseSubpage
-      title="Iron Man Project"
-      intro="The Iron Man Project is a cutting-edge AI-powered suit designed to enhance human capabilities. It combines advanced robotics, machine learning, and state-of-the-art materials."
-      galleryImages={[]} // No images for now
+      title="Iron Man MK5 Helmet"
+      intro={`Over the course of half a semester, my friends and I built this mockup of the Iron Man Mark-5 helmet. 
+      We wanted it to have all the features the helmet has from the movies--especially the AI voice assistant, 
+      AR Heads-Up Display (HUD), and mask actuation. After many sleepless nights, three prototype iterations, and 
+      a rollercoaster of emotions, I present to you our take on the MK5 Helmet.`}
+      galleryImages={[]}
       customDescription={<Description sections={descriptionSections} />}
-      learnMoreLink="/portfolio/iron-man/details"
+      learnMoreLink="https://olincollege.github.io/pie-2024-03/iron-man/"
     />
   );
 }

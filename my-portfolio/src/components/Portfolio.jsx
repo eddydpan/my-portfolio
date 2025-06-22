@@ -11,9 +11,9 @@ import stock5 from '../assets/project6.png';
 
 const portfolioItems = [
   {
-    slug: 'project-one',
+    slug: 'dancing-links',
     image: stock,
-    title: 'Project One',
+    title: 'Dancing Links (Algorithm X)',
     category: 'HTML5 CSS3 Bootstrap ReactJS',
   },
   {
@@ -26,25 +26,31 @@ const portfolioItems = [
     slug: 'bettafish-chess-player',
     image: stock2,
     title: 'Robot Chess Player - BettaFish',
-    category: 'HTML5 CSS3 Bootstrap Webpack ReactJS',
+    category: 'Python -- Robotics',
   },
   {
-    slug: 'project-four',
+    slug: 'farm-nerds',
     image: stock3,
-    title: 'Project Four',
-    category: 'Bootstrap ReactJS GoogleAPI',
+    title: 'FarmNerds Documentation Tool',
+    category: 'Python -- Full-Stack -- OCR',
   },
   {
-    slug: 'project-five',
+    slug: 'pVMpkin',
     image: stock4,
-    title: 'Project Five',
-    category: 'MERN',
+    title: 'pVMpkin - LC3 Virtual Machine',
+    category: 'C',
   },
   {
-    slug: 'project-six',
+    slug: 'hms-recyclability-predictor',
     image: stock5,
-    title: 'Project Six',
-    category: 'HTML5 CSS3 Bootstrap MERN',
+    title: 'How To Recycle - General Vision-Language Model for Predicting Recyclability',
+    category: 'Machine Learning -- Python -- R -- Academic Literature',
+  },
+  {
+    slug: 'kung-fu-panda-showdown',
+    image: stock4,
+    title: 'Kung Fu Panda Showdown',
+    category: 'Python',
   },
 ];
 
@@ -83,7 +89,7 @@ export default function Portfolio({ id }) {
         <div className="text-center mb-12">
           <h3 className="text-3xl font-bold text-gray-800">Portfolio</h3>
           <p className="text-gray-600 mt-4">
-            Incididunt nostrud id aute culpa excepteur pariatur consequat elit culpa nulla enim anim incididunt.
+            Here are a few of my projects! Click on each icon to learn more.
           </p>
           <div className="mt-4 w-16 h-1 bg-indigo-500 mx-auto"></div>
         </div>

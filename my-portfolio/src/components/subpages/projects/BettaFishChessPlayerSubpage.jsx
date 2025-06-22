@@ -6,7 +6,10 @@ export default function BettaFishChessPlayerSubpage() {
   const descriptionSections = [
     {
       header: 'Features',
-      content: 'Real-time move analysis, customizable difficulty levels, and an interactive user interface for beginners and experts.',
+      content: `WidowX-2500 Robot Manipulator
+                Hardware integration
+                Game logic / orchestration
+                computational setup nightmare`,
     },
     {
       header: 'Motivations',

@@ -29,8 +29,9 @@ function App() {
             </AnimatedLayout>
           }
         />
+        {/* Portfolio Projects */}
         <Route
-          path="/portfolio"
+          path="/portfolio/dancing-links"
           element={
             <AnimatedLayout>
               <Portfolio />
@@ -47,6 +48,30 @@ function App() {
         />
         <Route
           path="/portfolio/iron-man"
+          element={
+            <AnimatedLayout>
+              <IronManSubpage />
+            </AnimatedLayout>
+          }
+        />
+        <Route
+          path="/portfolio/farm-nerds"
+          element={
+            <AnimatedLayout>
+              <IronManSubpage />
+            </AnimatedLayout>
+          }
+        />
+        <Route
+          path="/portfolio/pVMpkin"
+          element={
+            <AnimatedLayout>
+              <IronManSubpage />
+            </AnimatedLayout>
+          }
+        />
+        <Route
+          path="/portfolio/hms-recyclability-predictor"
           element={
             <AnimatedLayout>
               <IronManSubpage />

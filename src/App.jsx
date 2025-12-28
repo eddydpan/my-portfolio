@@ -3,9 +3,8 @@ import AnimatedLayout from './AnimatedLayout';
 
 import LandingPage from './components/LandingPage';
 import AboutSection from './components/AboutSection';
-import Portfolio from './components/Portfolio';
-import BettaFishChessPlayerSubpage from './components/subpages/projects/BettaFishChessPlayerSubpage';
-import IronManSubpage from './components/subpages/projects/IronManSubpage';
+import Projects from './components/Projects';
+import ProjectSubpage from './components/ProjectSubpage';
 
 function App() {
   return (
@@ -17,7 +16,7 @@ function App() {
             <AnimatedLayout>
               <LandingPage />
               <AboutSection id="about" />
-              <Portfolio id="portfolio" />
+              <Projects id="projects" />
             </AnimatedLayout>
           }
         />
@@ -30,26 +29,18 @@ function App() {
           }
         />
         <Route
-          path="/portfolio"
+          path="/projects"
           element={
             <AnimatedLayout>
-              <Portfolio />
+              <Projects />
             </AnimatedLayout>
           }
         />
         <Route
-          path="/portfolio/bettafish-chess-player"
+          path="/projects/:slug"
           element={
             <AnimatedLayout>
-              <BettaFishChessPlayerSubpage />
-            </AnimatedLayout>
-          }
-        />
-        <Route
-          path="/portfolio/iron-man"
-          element={
-            <AnimatedLayout>
-              <IronManSubpage />
+              <ProjectSubpage />
             </AnimatedLayout>
           }
         />

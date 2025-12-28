@@ -1,7 +1,6 @@
 import { motion, useAnimation } from 'framer-motion';
 import { useEffect } from 'react';
 
-const triangleCount = 7;  // how many triangles to show
 const colors = ['#ff0000', '#cc0000', '#ff3333']; // shades of red
 
 function randomRange(min, max) {
@@ -9,20 +8,27 @@ function randomRange(min, max) {
 }
 
 // Single Triangle shape as SVG wrapped in motion.div
-function Triangle({ style, delay }) {
+function Triangle({ style, delay, orientation = 'horizontal' }) {
   const controls = useAnimation();
 
   useEffect(() => {
     async function sequence() {
-      // Shoot in from below
+      // Animation based on orientation
+      const animateFrom = orientation === 'horizontal' ? { x: -50, opacity: 0 } : { y: 50, opacity: 0 };
+      const floatAnimation = orientation === 'horizontal' 
+        ? { x: [0, -10, 0] }
+        : { y: [0, -10, 0] };
+      
+      // Shoot in
       await controls.start({
+        x: 0,
         y: 0,
         opacity: 1,
         transition: { duration: 0.8, delay, ease: 'easeOut' },
       });
-      // Float gently up and down forever
+      // Float gently
       controls.start({
-        y: [0, -10, 0],
+        ...floatAnimation,
         transition: {
           repeat: Infinity,
           repeatType: 'reverse',
@@ -32,7 +38,7 @@ function Triangle({ style, delay }) {
       });
     }
     sequence();
-  }, [controls, delay]);
+  }, [controls, delay, orientation]);
 
   return (
     <motion.div
@@ -43,8 +49,7 @@ function Triangle({ style, delay }) {
         width: 40,
         height: 40,
         ...style,
-        pointerEvents: 'none', // no interaction
-        
+        pointerEvents: 'none',
       }}
     >
       <svg
@@ -58,15 +63,31 @@ function Triangle({ style, delay }) {
   );
 }
 
-export default function TrianglesBackground() {
+export default function TrianglesBackground({ 
+  count = 10, 
+  orientation = 'horizontal',
+  height = '100%',
+  spreadX = { min: 5, max: 95 },
+  spreadY = { min: 5, max: 20 }
+}) {
   // generate random positions and delays for triangles
-  const triangles = Array.from({ length: triangleCount }).map((_, i) => ({
-    left: `${randomRange(5, 95)}%`,
-    bottom: `${randomRange(5, 20)}%`,
-    delay: i * 0.3,
-    scale: randomRange(0.5, 1.2),
-    rotate: randomRange(-30, 30),
-  }));
+  const triangles = Array.from({ length: count }).map((_, i) => {
+    // For horizontal orientation, spread triangles more horizontally
+    const left = orientation === 'horizontal' 
+      ? `${randomRange(spreadX.min, spreadX.max)}%`
+      : `${randomRange(10, 90)}%`;
+    
+    const position = orientation === 'horizontal'
+      ? { left, top: `${randomRange(spreadY.min, spreadY.max)}%` }
+      : { left, bottom: `${randomRange(spreadY.min, spreadY.max)}%` };
+
+    return {
+      ...position,
+      delay: i * 0.2,
+      scale: randomRange(0.5, 1.2),
+      rotate: randomRange(-30, 30),
+    };
+  });
 
   return (
     <div
@@ -74,20 +95,21 @@ export default function TrianglesBackground() {
       style={{
         position: 'absolute',
         inset: 0,
+        height,
         overflow: 'hidden',
         zIndex: 0,
         pointerEvents: 'none',
       }}
     >
-      {triangles.map(({ left, bottom, delay, scale, rotate }, i) => (
+      {triangles.map((pos, i) => (
         <Triangle
           key={i}
-          delay={delay}
+          delay={pos.delay}
+          orientation={orientation}
           style={{
-            left,
-            bottom,
-            scale,
-            rotate: `${rotate}deg`,
+            ...pos,
+            scale: pos.scale,
+            rotate: `${pos.rotate}deg`,
           }}
         />
       ))}

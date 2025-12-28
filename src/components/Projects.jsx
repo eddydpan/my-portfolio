@@ -1,6 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
+import { getAllProjects } from '../utils/loadProjects';
+import TrianglesBackground from './TrianglesBackground';
 
 import stock from '../assets/project1.png';
 import stock1 from '../assets/project2.png';
@@ -9,24 +11,13 @@ import stock3 from '../assets/project4.png';
 import stock4 from '../assets/project5.png';
 import stock5 from '../assets/project6.png';
 
-const portfolioItems = [
+// Fallback static projects for those without markdown files yet
+const staticProjects = [
   {
     slug: 'project-one',
     image: stock,
     title: 'Project One',
     category: 'HTML5 CSS3 Bootstrap ReactJS',
-  },
-  {
-    slug: 'iron-man',
-    image: stock1,
-    title: 'Iron Man Helmet',
-    category: 'HTML5 CSS3 Bootstrap Webpack SmoothScrolling VanillaJS',
-  },
-  {
-    slug: 'bettafish-chess-player',
-    image: stock2,
-    title: 'Robot Chess Player - BettaFish',
-    category: 'HTML5 CSS3 Bootstrap Webpack ReactJS',
   },
   {
     slug: 'project-four',
@@ -48,10 +39,10 @@ const portfolioItems = [
   },
 ];
 
-const PortfolioItem = ({ slug, image, title, category }) => (
+const ProjectsItem = ({ slug, image, title, category }) => (
   <div className="bg-white shadow-md rounded-lg overflow-hidden group">
     <div className="relative overflow-hidden">
-      <Link to={`/portfolio/${slug}`}>
+      <Link to={`/projects/${slug}`}>
         <img
           src={image}
           alt={title}
@@ -66,9 +57,22 @@ const PortfolioItem = ({ slug, image, title, category }) => (
   </div>
 );
 
-export default function Portfolio({ id }) {
+export default function Projects({ id }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
+
+  // Load projects from markdown files and combine with static projects
+  const projectsItems = useMemo(() => {
+    try {
+      const markdownProjects = getAllProjects();
+      // Combine markdown projects with static projects
+      return [...markdownProjects, ...staticProjects];
+    } catch (error) {
+      console.error('Error loading markdown projects:', error);
+      // Fallback to static projects only
+      return staticProjects;
+    }
+  }, []);
 
   return (
     <motion.section
@@ -77,19 +81,31 @@ export default function Portfolio({ id }) {
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="py-12 bg-gray-100 relative"
+      className="bg-gray-100 relative"
     >
-      <div className="container mx-auto px-6">
+      {/* Triangles Divider Section */}
+      <div className="h-40 relative overflow-hidden mb-8">
+        <TrianglesBackground 
+          count={12} 
+          orientation="horizontal"
+          height="100%"
+          spreadX={{ min: 0, max: 100 }}
+          spreadY={{ min: 20, max: 80 }}
+        />
+      </div>
+
+      {/* Projects Content */}
+      <div className="container mx-auto px-6 pb-12">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-gray-800">Portfolio</h3>
+          <h3 className="text-3xl font-bold text-gray-800">Projects</h3>
           <p className="text-gray-600 mt-4">
             Incididunt nostrud id aute culpa excepteur pariatur consequat elit culpa nulla enim anim incididunt.
           </p>
           <div className="mt-4 w-16 h-1 bg-indigo-500 mx-auto"></div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {portfolioItems.map((item) => (
-            <PortfolioItem
+          {projectsItems.map((item) => (
+            <ProjectsItem
               key={item.slug}
               slug={item.slug}
               image={item.image}

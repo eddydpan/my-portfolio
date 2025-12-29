@@ -1,12 +1,21 @@
 import matter from 'gray-matter';
-import stock1 from '../assets/project2.png';
-import stock2 from '../assets/project3.png';
 
-// Map of image names to actual imports
-const imageMap = {
-  'project2': stock1,
-  'project3': stock2,
-};
+// Dynamically import all images from assets directory
+const imageModules = import.meta.glob('/src/assets/**/*.{png,jpg,jpeg,gif,svg,webp}', { 
+  eager: true,
+  import: 'default'
+});
+
+// Build imageMap from all imported images
+// Keys will be the filename without extension (e.g., 'project2', 'seven-segment-display')
+const imageMap = {};
+
+for (const path in imageModules) {
+  const imageSrc = imageModules[path];
+  // Extract filename without extension from path
+  const filename = path.split('/').pop().replace(/\.\w+$/, '');
+  imageMap[filename] = imageSrc;
+}
 
 // Helper to resolve gallery images
 const resolveGalleryImages = (images) => {
@@ -49,4 +58,14 @@ export const getAllProjects = () => {
 
 export const getProjectBySlug = (slug) => {
   return allProjectsData[slug] || null;
+};
+
+// Export helper to resolve image sources in markdown
+export const resolveImageSrc = (src) => {
+  // Check if src is a key in imageMap
+  if (imageMap[src]) {
+    return imageMap[src];
+  }
+  // Otherwise return the src as-is (for external URLs)
+  return src;
 };

@@ -1,10 +1,10 @@
 ---
 title: "RISC-V VM and Processor"
 slug: "risc-v"
-image: ""
+image: "harris-harris-multicycle-unpipelined-processor-diag"
 category: "C | CMake | RISC-V | SystemVerilog | ASM"
 galleryImages:
-  - 
+  - mp4-processor-sim
 learnMoreLink: "https://github.com/olincollege/pVMpkin"
 --- 
 

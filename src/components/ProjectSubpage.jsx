@@ -2,6 +2,8 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import 'react-pdf/dist/Page/TextLayer.css';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
 import { getProjectBySlug, resolveImageSrc } from '../utils/loadProjects';
 import BaseSubpage from './subpages/BaseSubpage';
 import PdfViewer from './PdfViewer';

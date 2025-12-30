@@ -37,6 +37,11 @@ export default function ProjectSubpage() {
     loadProject();
   }, [slug]);
 
+  useEffect(() => {
+    // Scroll to top when component mounts or slug changes
+    window.scrollTo(0, 0);
+  }, [slug]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -75,10 +80,60 @@ export default function ProjectSubpage() {
             const resolvedSrc = resolveImageSrc(src);
             return <img src={resolvedSrc} className="w-full rounded-lg shadow-md my-4" {...props} />;
           },
-          code: ({node, inline, ...props}) => 
-            inline ? 
-              <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono" {...props} /> : 
-              <code className="block bg-gray-100 p-4 rounded text-sm font-mono overflow-x-auto" {...props} />,
+          video: ({node, src, ...props}) => {
+            // Resolve video src through imageMap if it's a key name
+            const resolvedSrc = resolveImageSrc(src);
+            return (
+              <video 
+                controls 
+                className="w-full rounded-lg shadow-md my-4"
+                {...props}
+              >
+                <source src={resolvedSrc} type="video/mp4" />
+                Your browser doesn't support video playback.
+              </video>
+            );
+          },
+          code: ({node, inline, className, children, ...props}) => {
+            // Render inline code normally
+            if (inline) {
+              return <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono" {...props}>{children}</code>;
+            }
+
+            // Block code: detect language from className (e.g. 'language-youtube')
+            const lang = className ? className.replace('language-', '') : '';
+            const codeContent = String(children).trim();
+
+            // Support fenced blocks with language 'youtube' or 'youtube-url'
+            if (lang === 'youtube' || lang === 'youtube-url') {
+              // Accept either a raw video id or a full YouTube URL; extract ID if needed
+              let id = codeContent;
+              const urlMatch = codeContent.match(/(?:youtu\.be\/([A-Za-z0-9_-]{6,})|v=([A-Za-z0-9_-]{6,})|embed\/([A-Za-z0-9_-]{6,}))/);
+              if (urlMatch) {
+                id = urlMatch[1] || urlMatch[2] || urlMatch[3] || id;
+              }
+
+              const src = `https://www.youtube.com/embed/${id}`;
+
+              return (
+                <div className="w-full my-4" style={{ position: 'relative', paddingTop: '56.25%' }}>
+                  <iframe
+                    src={src}
+                    title="YouTube video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                  />
+                </div>
+              );
+            }
+
+            // Fallback: render regular code block
+            return (
+              <pre className="bg-gray-100 p-4 rounded text-sm font-mono overflow-x-auto"><code {...props}>{codeContent}</code></pre>
+            );
+          },
         }}
       >
         {markdownBody}

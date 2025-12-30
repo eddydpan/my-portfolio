@@ -2,7 +2,7 @@
 title: "FPGA Digital Sequencer"
 slug: "digital-sequencer"
 image: "digital-sequencer-thumbnail"
-category: "SystemVerilog C++ UART I2C DSP Qt"
+category: "SystemVerilog | C++ | UART | I2C | DSP | Qt"
 galleryImages:
   - "digital-sequencer-thumbnail"
 learnMoreLink: "https://github.com/eddydpan/fpga-sequencer/tree/main"
@@ -11,7 +11,7 @@ learnMoreLink: "https://github.com/eddydpan/fpga-sequencer/tree/main"
 # FPGA Digital Sequencer
 Updated: December 28, 2025
 
-## Project Overview
+## Project Overview 
 
 Our core objective is to develop a functional Digital Beat Sequencer implemented in SystemVerilog on the iceBlinkPico. Our MVP consists of three integrated subsystems: the Core Sequencer Logic, the Audio Output, and the Visual Output. For the core logic, we will use a 4x4 Keypad Matrix to program the memory addresses of a 16-step sequence, determining which beats trigger a sound. The audio output will be monophonic; a rotary encoder will set the tone by mapping user input to one of eight selectable pitches within a single octave (C4-C5). This tone is generated as a basic digital square wave and output directly to a buzzer, bypassing the need for a DAC. Finally, for visual output, we use a seven segment display to show the tone currently selected by the rotary encoder.
 

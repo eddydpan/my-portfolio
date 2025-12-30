@@ -1,18 +1,19 @@
 import matter from 'gray-matter';
 
-// Dynamically import all images from assets directory
-const imageModules = import.meta.glob('/src/assets/**/*.{png,jpg,jpeg,gif,svg,webp}', { 
+// Dynamically import all images and videos from assets directory
+const imageModules = import.meta.glob('/src/assets/**/*.{png,jpg,jpeg,gif,svg,webp,mp4,webm,mov}', { 
   eager: true,
   import: 'default'
 });
 
-// Build imageMap from all imported images
-// Keys will be the filename without extension (e.g., 'project2', 'seven-segment-display')
+// Build imageMap from all imported images and videos
+// Keys will be the filename without extension (e.g., 'project2', 'seven-segment-display', 'demo-video')
 const imageMap = {};
 
 for (const path in imageModules) {
   const imageSrc = imageModules[path];
   // Extract filename without extension from path
+  // e.g., '/src/assets/sequencer/seven-segment-display.png' -> 'seven-segment-display'
   const filename = path.split('/').pop().replace(/\.\w+$/, '');
   imageMap[filename] = imageSrc;
 }

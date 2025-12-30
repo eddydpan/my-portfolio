@@ -48,7 +48,7 @@ export default function Projects({ id }) {
         shape="triangle"
         color="red"
         count={12} 
-        orientation="horizontal"
+        orientation="vertical"
         height="160px"
         spreadX={{ min: 0, max: 100 }}
         spreadY={{ min: 20, max: 80 }}

@@ -28,7 +28,7 @@ export default function AnimatedShapes({
 
   // Normalize color: if it's a name like 'red', map to hex; otherwise use as-is
   const colorMap = {
-    red: '#FF6B6B',
+    red: '#E60000',
     blue: '#4F46E5',
     yellow: '#FCD34D',
     green: '#10B981',
@@ -99,7 +99,7 @@ export default function AnimatedShapes({
         case 'triangle':
           return (
             <svg width={size} height={size} viewBox="0 0 100 100" style={{ filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.2))' }}>
-              <polygon points="50,10 90,90 10,90" fill={resolvedColor} opacity="0.8" />
+              <polygon points="50,10 90,90 10,90" fill={resolvedColor} opacity="0.9" />
             </svg>
           );
         case 'circle':
@@ -110,7 +110,7 @@ export default function AnimatedShapes({
                 height: size,
                 borderRadius: '50%',
                 backgroundColor: resolvedColor,
-                opacity: 0.8,
+                opacity: 0.9,
                 boxShadow: '0 0 8px rgba(0,0,0,0.2)',
               }}
             />
@@ -122,7 +122,7 @@ export default function AnimatedShapes({
                 width: size,
                 height: size,
                 backgroundColor: resolvedColor,
-                opacity: 0.8,
+                opacity: 1,
                 boxShadow: '0 0 8px rgba(0,0,0,0.2)',
               }}
             />

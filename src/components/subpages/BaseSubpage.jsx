@@ -55,15 +55,15 @@ export default function BaseSubpage({
 
       {/* Main Content Area with optional side animations */}
       <div className="relative px-6 py-16">
-        {/* Left animation decoration - shapes constrained to left margin space */}
+        {/* Left animation decoration - shapes constrained to left margin space with 1/8" gap to text */}
         {leftAnimation && (
-          <div className="absolute left-0 top-0 bottom-0 w-24 hidden lg:block">
+          <div className="absolute left-0 top-0 bottom-0 hidden lg:block" style={{ width: 'calc((100% - 64rem) / 2)', paddingRight: '12px' }}>
             {leftAnimation}
           </div>
         )}
-        {/* Right animation decoration - shapes constrained to right margin space */}
+        {/* Right animation decoration - shapes constrained to right margin space with 1/8" gap to text */}
         {rightAnimation && (
-          <div className="absolute right-0 top-0 bottom-0 w-24 hidden lg:block">
+          <div className="absolute right-0 top-0 bottom-0 hidden lg:block" style={{ width: 'calc((100% - 64rem) / 2)', paddingLeft: '12px' }}>
             {rightAnimation}
           </div>
         )}

@@ -5,7 +5,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 // The worker file is copied from node_modules to public/ during setup.
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
-export default function PdfViewer({ src, initialPage = 1, title = 'Documentation' }) {
+export default function PdfViewer({ src, initialPage = 1, title = 'PDF' }) {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(initialPage);
   const [error, setError] = useState(null);

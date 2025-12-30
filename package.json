@@ -7,16 +7,19 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "node -e \"const fs = require('fs'); const path = require('path'); const src = path.join(__dirname, 'node_modules/react-pdf/node_modules/pdfjs-dist/build/pdf.worker.min.mjs'); const dst = path.join(__dirname, 'public/pdf.worker.min.mjs'); if(fs.existsSync(src)) fs.copyFileSync(src, dst);\""
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
     "buffer": "^6.0.3",
     "gray-matter": "^4.0.3",
     "motion": "^12.18.1",
+    "pdfjs-dist": "^5.4.530",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
+    "react-pdf": "^10.2.0",
     "react-router-dom": "^7.6.2",
     "react-router-hash-link": "^2.4.3",
     "remark-gfm": "^4.0.1"

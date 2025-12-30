@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# PDF.js worker (generated automatically on npm install)
+public/pdf.worker.min.mjs

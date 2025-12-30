@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getProjectBySlug, resolveImageSrc } from '../utils/loadProjects';
 import BaseSubpage from './subpages/BaseSubpage';
+import PdfViewer from './PdfViewer';
 
 export default function ProjectSubpage() {
   const { slug } = useParams();
@@ -103,6 +104,17 @@ export default function ProjectSubpage() {
             // Block code: detect language from className (e.g. 'language-youtube')
             const lang = className ? className.replace('language-', '') : '';
             const codeContent = String(children).trim();
+            // Support fenced blocks with language 'pdf' or 'pdf-url'
+            if (lang === 'pdf' || lang === 'pdf-url') {
+              // codeContent can be a full URL or an app-relative path (e.g. /docs/file.pdf)
+              // or a key that resolveImageSrc can resolve (if you import PDF into assets and register it).
+              const resolved = resolveImageSrc(codeContent) || codeContent;
+              return (
+                <div className="w-full my-4">
+                  <PdfViewer src={resolved} />
+                </div>
+              );
+            }
 
             // Support fenced blocks with language 'youtube' or 'youtube-url'
             if (lang === 'youtube' || lang === 'youtube-url') {
@@ -141,11 +153,22 @@ export default function ProjectSubpage() {
     </div>
   );
 
+  const CombinedDescription = () => (
+    <div>
+      <MarkdownDescription />
+      {frontmatter.pdf && (
+        <div className="mt-6">
+          <PdfViewer src={frontmatter.pdf} />
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <BaseSubpage
       title={frontmatter.title}
       galleryImages={frontmatter.galleryImages || []}
-      customDescription={<MarkdownDescription />}
+      customDescription={<CombinedDescription />}
       learnMoreLink={frontmatter.learnMoreLink}
     />
   );

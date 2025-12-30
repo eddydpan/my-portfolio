@@ -6,6 +6,14 @@ category: "C | CMake | RISC-V | SystemVerilog | ASM"
 galleryImages:
   - mp4-processor-sim
 learnMoreLink: "https://github.com/olincollege/pVMpkin"
+leftAnimation:
+  shape: circle
+  color: blue
+  count: 8
+rightAnimation:
+  shape: circle
+  color: blue
+  count: 8
 --- 
 
 ## Overview

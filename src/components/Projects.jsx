@@ -2,7 +2,7 @@ import React, { useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import { getAllProjects } from '../utils/loadProjects';
-import TrianglesBackground from './TrianglesBackground';
+import AnimatedShapesSection from './AnimatedShapesSection';
 
 const ProjectsItem = ({ slug, image, title, category }) => (
   <div className="bg-white shadow-md rounded-lg overflow-hidden group">
@@ -43,16 +43,17 @@ export default function Projects({ id }) {
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className="bg-gray-100 relative"
     >
-      {/* Triangles Divider Section */}
-      <div className="h-40 relative overflow-hidden mb-8">
-        <TrianglesBackground 
-          count={12} 
-          orientation="horizontal"
-          height="100%"
-          spreadX={{ min: 0, max: 100 }}
-          spreadY={{ min: 20, max: 80 }}
-        />
-      </div>
+      {/* Animated Shapes Divider Section */}
+      <AnimatedShapesSection 
+        shape="triangle"
+        color="red"
+        count={12} 
+        orientation="horizontal"
+        height="160px"
+        spreadX={{ min: 0, max: 100 }}
+        spreadY={{ min: 20, max: 80 }}
+        className="mb-8"
+      />
 
       {/* Projects Content */}
       <div className="container mx-auto px-6 pb-12">

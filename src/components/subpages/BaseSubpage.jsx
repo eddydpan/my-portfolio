@@ -2,7 +2,28 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function BaseSubpage({ title, intro, galleryImages, customDescription, learnMoreLink }) {
+/**
+ * BaseSubpage component with optional animated decorations and banner background.
+ * 
+ * Props:
+ *   - title: Page title (required)
+ *   - galleryImages: Array of image URLs for carousel gallery
+ *   - customDescription: React component or content to render
+ *   - learnMoreLink: URL for "More Information" button
+ *   - leftAnimation: AnimatedShapes config or JSX element to render on left margin (default: null)
+ *   - rightAnimation: AnimatedShapes config or JSX element to render on right margin (default: null)
+ *   - bannerBackground: AnimatedShapes config or JSX element for hero banner (default: null)
+ */
+export default function BaseSubpage({
+  title,
+  intro,
+  galleryImages,
+  customDescription,
+  learnMoreLink,
+  leftAnimation = null,
+  rightAnimation = null,
+  bannerBackground = null,
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const images = Array.isArray(galleryImages) ? galleryImages : [];
   const len = images.length;
@@ -19,14 +40,36 @@ export default function BaseSubpage({ title, intro, galleryImages, customDescrip
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section with Title */}
-      <div className="bg-gray-50 py-20 px-6">
-        <div className="max-w-4xl mx-auto">
+      <div className="relative bg-gray-50 py-20 px-6 overflow-hidden">
+        {/* Render banner background if provided */}
+        {bannerBackground && (
+          <div className="absolute inset-0 z-0">
+            {bannerBackground}
+          </div>
+        )}
+        {/* Content above background */}
+        <div className="max-w-4xl mx-auto relative z-10">
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">{title}</h1>
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="max-w-4xl mx-auto px-6 py-16">
+      {/* Main Content Area with optional side animations */}
+      <div className="relative px-6 py-16">
+        {/* Left animation decoration - shapes constrained to left margin space */}
+        {leftAnimation && (
+          <div className="absolute left-0 top-0 bottom-0 w-24 hidden lg:block">
+            {leftAnimation}
+          </div>
+        )}
+        {/* Right animation decoration - shapes constrained to right margin space */}
+        {rightAnimation && (
+          <div className="absolute right-0 top-0 bottom-0 w-24 hidden lg:block">
+            {rightAnimation}
+          </div>
+        )}
+
+        {/* Center content */}
+        <div className="max-w-4xl mx-auto">
         {/* Gallery carousel - show single large image with arrows and dots */}
         {len > 0 && (
           <div className="mb-12">
@@ -106,6 +149,7 @@ export default function BaseSubpage({ title, intro, galleryImages, customDescrip
             </a>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import { getProjectBySlug, resolveImageSrc } from '../utils/loadProjects';
 import BaseSubpage from './subpages/BaseSubpage';
 import PdfViewer from './PdfViewer';
+import AnimatedShapes from './AnimatedShapes';
 
 export default function ProjectSubpage() {
   const { slug } = useParams();
@@ -166,12 +167,41 @@ export default function ProjectSubpage() {
     </div>
   );
 
+  // Build animation components from frontmatter config
+  const buildAnimationComponent = (config, isMargin = false) => {
+    if (!config) return null;
+    
+    // For margin animations, constrain spreadX to fit within the margin (w-24 = ~96px)
+    // spreadX: 0-100 means 0-100% of the 96px margin width
+    // For banner, use full width
+    const spreadX = config.spreadX || (isMargin ? { min: 10, max: 90 } : { min: 0, max: 100 });
+    
+    return (
+      <AnimatedShapes
+        shape={config.shape || 'triangle'}
+        color={config.color || 'red'}
+        count={config.count || 12}
+        orientation={config.orientation || (isMargin ? 'vertical' : 'horizontal')}
+        height="100%"
+        spreadX={spreadX}
+        spreadY={config.spreadY || { min: 0, max: 100 }}
+      />
+    );
+  };
+
+  const leftAnimation = buildAnimationComponent(frontmatter.leftAnimation, true);
+  const rightAnimation = buildAnimationComponent(frontmatter.rightAnimation, true);
+  const bannerBackground = buildAnimationComponent(frontmatter.bannerBackground, false);
+
   return (
     <BaseSubpage
       title={frontmatter.title}
       galleryImages={frontmatter.galleryImages || []}
       customDescription={<CombinedDescription />}
       learnMoreLink={frontmatter.learnMoreLink}
+      leftAnimation={leftAnimation}
+      rightAnimation={rightAnimation}
+      bannerBackground={bannerBackground}
     />
   );
 }

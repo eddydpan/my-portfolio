@@ -6,6 +6,15 @@ category: "SystemVerilog | C++ | UART | I2C | DSP | Qt"
 galleryImages:
   - "digital-sequencer-thumbnail"
 learnMoreLink: "https://github.com/eddydpan/fpga-sequencer/tree/main"
+leftAnimation:
+  shape: circle
+  color: green
+  count: 8
+rightAnimation:
+  shape: circle
+  color: green
+  count: 8
+---
 --- 
 
 # FPGA Digital Sequencer

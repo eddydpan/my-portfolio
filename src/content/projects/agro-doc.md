@@ -7,6 +7,15 @@ galleryImages:
   - "agrodoc-backend-component-diagram"
   - "agrodoc-sys-arch-diagram"
 learnMoreLink: "https://github.com/FarmNerdsLab/agro-doc"
+leftAnimation:
+  shape: triangle
+  color: green
+  count: 8
+rightAnimation:
+  shape: triangle
+  color: green
+  count: 8
+---
 ---
 
 ## GitHub Repository

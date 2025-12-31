@@ -8,6 +8,14 @@ galleryImages:
   - "chess-bot-sim"
   - "chess-grid-segmentation"
 learnMoreLink: "https://eddydpan.github.io/chess_bot/"
+leftAnimation:
+  shape: square
+  color: yellow
+  count: 8
+rightAnimation:
+  shape: square
+  color: yellow
+  count: 8
 ---
 
 ## Description  

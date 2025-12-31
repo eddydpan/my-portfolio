@@ -3,20 +3,18 @@ import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import { getAllProjects } from '../utils/loadProjects';
 import AnimatedShapesSection from './AnimatedShapesSection';
+import PROJECT_ORDER from '../config/projectOrder';
 
 const ProjectsItem = ({ slug, image, title, category }) => (
   <div className="bg-white shadow-md rounded-lg overflow-hidden group">
-    <div className="relative overflow-hidden h-48 flex items-center justify-center">
-      {/* Landscape iPhone aspect box (~812x375 => padding-top 46.2%) */}
-      <div className="w-full max-w-[420px] mx-auto" style={{ position: 'relative', paddingTop: '46.2%' }}>
-        <Link to={`/projects/${slug}`} className="absolute inset-0 flex items-center justify-center">
-          <img
-            src={image}
-            alt={title}
-            className="absolute inset-0 m-auto max-w-full max-h-full object-cover transition-transform duration-300 group-hover:scale-110"
-          />
-        </Link>
-      </div>
+    <div className="relative overflow-hidden h-48">
+      <Link to={`/projects/${slug}`} className="block w-full h-full">
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+        />
+      </Link>
     </div>
     <div className="p-4">
       <h2 className="text-lg font-bold text-gray-800">{title}</h2>
@@ -25,14 +23,25 @@ const ProjectsItem = ({ slug, image, title, category }) => (
   </div>
 );
 
-export default function Projects({ id }) {
+export default function Projects({ id, order }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
 
   // Load projects from markdown files and combine with static projects
+  const rawProjects = useMemo(() => getAllProjects(), []);
+
+  // Determine effective order: use passed-in `order` prop if provided,
+  // otherwise fall back to the centralized `PROJECT_ORDER` list.
   const projectsItems = useMemo(() => {
-    return getAllProjects();
-  }, []);
+    const effectiveOrder = Array.isArray(order) && order.length > 0 ? order : PROJECT_ORDER;
+    if (Array.isArray(effectiveOrder) && effectiveOrder.length > 0) {
+      const map = new Map(rawProjects.map((p) => [p.slug, p]));
+      const ordered = effectiveOrder.map((s) => map.get(s)).filter(Boolean);
+      const remaining = rawProjects.filter((p) => !effectiveOrder.includes(p.slug));
+      return [...ordered, ...remaining];
+    }
+    return rawProjects;
+  }, [rawProjects, order]);
 
   return (
     <motion.section

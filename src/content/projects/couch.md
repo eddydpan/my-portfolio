@@ -8,6 +8,15 @@ galleryImages:
   - "couch-pre-drive"
   - "couch-debugging-candid"
 learnMoreLink: https://github.com/eddydpan/COUCH"
+leftAnimation:
+  shape: square
+  color: blue
+  count: 8
+rightAnimation:
+  shape: square
+  color: blue
+  count: 8
+---
 --- 
 
 ## Hype Video

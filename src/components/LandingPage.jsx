@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { HashLink } from 'react-router-hash-link';
 import { autoTyper } from '../utils/autoTyper';
-import backgroundGif from '../assets/background.gif';
+import backgroundGif from '../assets/landing-background.gif';
 import { motion } from 'motion/react';
 
 export default function LandingPage() {
@@ -15,7 +15,16 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (typerRef.current) {
-      autoTyper(typerRef.current, "Hi, I'm [Your Name]! I'm a passionate developer specializing in building modern web applications.", 100);
+      autoTyper(
+        typerRef.current,
+        [
+          'Software Engineer',
+          'DevOps',
+          'Embedded Systems',
+          'Full Stack',
+        ],
+        100
+      );
     }
   }, []);
 
@@ -41,7 +50,7 @@ export default function LandingPage() {
 
       {/* Content container */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 text-white text-center">
-        <h1 className="text-5xl font-extrabold mb-6">Welcome to My Portfolio</h1>
+        <h1 className="text-5xl font-extrabold mb-6">Eddy Pan</h1>
         <div className="w-full overflow-hidden bg-transparent text-white">
           <div ref={typerRef} className="text-lg"></div>
         </div>
@@ -51,14 +60,14 @@ export default function LandingPage() {
           <HashLink
             smooth
             to="#about"
-            className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition"
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
           >
             About Me
           </HashLink>
           <HashLink
             smooth
             to="#projects"
-            className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition"
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
           >
             My Work
           </HashLink>

@@ -6,6 +6,15 @@ category: "JavaScript | React | TailwindCSS | Python | Algorithms"
 galleryImages:
   - 
 learnMoreLink: "https://github.com/eddydpan/dancing-links"
+leftAnimation:
+  shape: square
+  color: red
+  count: 8
+rightAnimation:
+  shape: square
+  color: red
+  count: 8
+---
 --- 
 
 ## Overview

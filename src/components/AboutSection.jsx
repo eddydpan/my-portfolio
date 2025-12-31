@@ -22,9 +22,11 @@ export default function AboutSection({ id }) {
           <div className="w-full md:w-1/2 md:pr-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">About Me</h2>
             <p className="text-base leading-relaxed text-gray-700">
-              Hello! I'm [Your Name], a software engineer with a passion for exploring breadth.
-              I love solving complex problems with elegant solutions. When I'm not coding, you can find me
-              exploring new technologies, reading, or enjoying the outdoors.
+              Hello! I'm a junior at Olin College of Engineering '27, studying Computer Science
+              and Robotics. I love working on hands-on software projects and exploring a broad 
+              range of topics across the stack. I'm drawn to projects with clear impact, as well as 
+              side projects that breathe whimsy into learning. Whether I'm tackling a practical 
+              problem or experimenting with a new concept, I enjoy learning by building and iterating.
             </p>
           </div>
 

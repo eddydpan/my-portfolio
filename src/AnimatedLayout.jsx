@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { useLocation } from 'react-router-dom';
+import Footer from './components/Footer';
 
 export default function AnimatedLayout({ children }) {
   const location = useLocation();
@@ -13,6 +14,7 @@ export default function AnimatedLayout({ children }) {
       transition={{ duration: 0.4 }}
     >
       {children}
+      <Footer />
     </motion.div>
   );
 }

@@ -4,16 +4,30 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
-import { getProjectBySlug, resolveImageSrc } from '../utils/loadProjects';
+import { getProjectBySlug, resolveImageSrc, getAllProjects } from '../utils/loadProjects';
 import BaseSubpage from './subpages/BaseSubpage';
 import PdfViewer from './PdfViewer';
 import AnimatedShapes from './AnimatedShapes';
+import PROJECT_ORDER from '../config/projectOrder';
 
 export default function ProjectSubpage() {
   const { slug } = useParams();
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Calculate previous and next projects based on PROJECT_ORDER
+  const allProjects = getAllProjects();
+  const effectiveOrder = PROJECT_ORDER.length > 0 ? PROJECT_ORDER : allProjects.map(p => p.slug);
+  
+  // Build ordered project list
+  const orderedProjects = effectiveOrder
+    .map(slug => allProjects.find(p => p.slug === slug))
+    .filter(Boolean);
+  
+  const currentIndex = orderedProjects.findIndex(p => p.slug === slug);
+  const previousProject = currentIndex > 0 ? orderedProjects[currentIndex - 1] : null;
+  const nextProject = currentIndex < orderedProjects.length - 1 ? orderedProjects[currentIndex + 1] : null;
 
   useEffect(() => {
     const loadProject = () => {
@@ -43,7 +57,7 @@ export default function ProjectSubpage() {
 
   useEffect(() => {
     // Scroll to top when component mounts or slug changes
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [slug]);
 
   if (loading) {
@@ -202,6 +216,8 @@ export default function ProjectSubpage() {
       leftAnimation={leftAnimation}
       rightAnimation={rightAnimation}
       bannerBackground={bannerBackground}
+      previousProject={previousProject}
+      nextProject={nextProject}
     />
   );
 }

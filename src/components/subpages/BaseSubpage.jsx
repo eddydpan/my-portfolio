@@ -13,6 +13,8 @@ import { motion, AnimatePresence } from 'framer-motion';
  *   - leftAnimation: AnimatedShapes config or JSX element to render on left margin (default: null)
  *   - rightAnimation: AnimatedShapes config or JSX element to render on right margin (default: null)
  *   - bannerBackground: AnimatedShapes config or JSX element for hero banner (default: null)
+ *   - previousProject: Object with { slug, title } for previous project navigation
+ *   - nextProject: Object with { slug, title } for next project navigation
  */
 export default function BaseSubpage({
   title,
@@ -23,6 +25,8 @@ export default function BaseSubpage({
   leftAnimation = null,
   rightAnimation = null,
   bannerBackground = null,
+  previousProject = null,
+  nextProject = null,
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const images = Array.isArray(galleryImages) ? galleryImages : [];
@@ -70,6 +74,63 @@ export default function BaseSubpage({
 
         {/* Center content */}
         <div className="max-w-4xl mx-auto">
+        {/* Navigation Header */}
+        <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200">
+          {/* Go Back button on the left */}
+          <Link
+            to="/#projects"
+            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span className="font-medium">Go Back</span>
+          </Link>
+
+          {/* Previous/Next project buttons on the right */}
+          <div className="flex items-center space-x-4">
+            {previousProject ? (
+              <Link
+                to={`/projects/${previousProject.slug}`}
+                className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+                title={previousProject.title}
+              >
+                <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                <span className="font-medium">Previous</span>
+              </Link>
+            ) : (
+              <span className="text-gray-300 flex items-center">
+                <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                <span className="font-medium">Previous</span>
+              </span>
+            )}
+
+            {nextProject ? (
+              <Link
+                to={`/projects/${nextProject.slug}`}
+                className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+                title={nextProject.title}
+              >
+                <span className="font-medium">Next</span>
+                <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            ) : (
+              <span className="text-gray-300 flex items-center">
+                <span className="font-medium">Next</span>
+                <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            )}
+          </div>
+        </div>
+
         {/* Gallery carousel - show single large image with arrows and dots */}
         {len > 0 && (
           <div className="mb-12">

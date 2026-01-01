@@ -5,9 +5,12 @@ image: "home-automation-thumbnail"
 category: "Python | C++ | MQTT | Networking | Linux | Bash"
 galleryImages:
   - 
-learnMoreLink: "https://github.com/eddydpan/fpga-sequencer/tree/main" //TODO: resolve this link
+learnMoreLink: "https://github.com/eddydpan/pancluster"
 --- 
+## Github Repository
+This repo contains the source code for the distributed systems home automation project.  
 
+**Github Link:** [https://github.com/eddydpan/pancluster](https://github.com/eddydpan/pancluster)
 
 ## Overview
 I have been a bit obsessed about "smartifying" my living spaces. However, I've also been trying to stay more security-conscious. While the convenience of an Amazon Echo or Google Home seemed incredible, my pride kicked in thinking: "yeah, I could build this myself".  

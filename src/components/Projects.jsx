@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import { getAllProjects } from '../utils/loadProjects';
@@ -26,6 +26,17 @@ const ProjectsItem = ({ slug, image, title, category }) => (
 export default function Projects({ id, order }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
+  
+  // Persist showAll state in localStorage
+  const [showAll, setShowAll] = useState(() => {
+    const saved = localStorage.getItem('projectsShowAll');
+    return saved === 'true';
+  });
+
+  // Save to localStorage whenever showAll changes
+  useEffect(() => {
+    localStorage.setItem('projectsShowAll', showAll);
+  }, [showAll]);
 
   // Load projects from markdown files and combine with static projects
   const rawProjects = useMemo(() => getAllProjects(), []);
@@ -73,16 +84,105 @@ export default function Projects({ id, order }) {
           </p>
           <div className="mt-4 w-16 h-1 bg-indigo-500 mx-auto"></div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projectsItems.map((item) => (
-            <ProjectsItem
-              key={item.slug}
-              slug={item.slug}
-              image={item.image}
-              title={item.title}
-              category={item.category}
-            />
-          ))}
+        <div className="relative">
+          {/* Projects Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projectsItems.map((item, index) => {
+              const isFirstRow = index < 3;
+              const isSecondRow = index >= 3 && index < 6;
+              const isBeyondSecondRow = index >= 6;
+              
+              return (
+                <motion.div
+                  key={item.slug}
+                  initial={{ opacity: 1 }}
+                  animate={{ 
+                    opacity: !showAll && isSecondRow ? 0.4 : 1,
+                  }}
+                  transition={{ duration: 0.4 }}
+                  style={{
+                    display: !showAll && isBeyondSecondRow ? 'none' : 'block',
+                    pointerEvents: !showAll && !isFirstRow ? 'none' : 'auto',
+                  }}
+                  className={!showAll && isSecondRow ? 'overflow-hidden relative' : ''}
+                >
+                  <ProjectsItem
+                    slug={item.slug}
+                    image={item.image}
+                    title={item.title}
+                    category={item.category}
+                  />
+                  {/* Clip mask for second row preview */}
+                  {!showAll && isSecondRow && (
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-100 to-gray-100 pointer-events-none" style={{ top: '50%' }} />
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* More button positioned right after second row */}
+          {!showAll && projectsItems.length > 3 && (
+            <motion.div 
+              className="relative z-10 -mt-20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="w-full flex flex-col items-center py-3 bg-transparent hover:bg-black/5 transition-all duration-300 group"
+                aria-label="Show more projects"
+              >
+                <span className="text-base font-semibold text-black mb-1">
+                  More
+                </span>
+                <motion.svg
+                  className="w-24 h-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                  animate={{ y: [0, 2, 0] }}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                >
+                  {/* Two chevrons stacked tightly */}
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 8l-7 7-7-7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 12l-7 7-7-7" />
+                </motion.svg>
+              </button>
+            </motion.div>
+          )}
+
+          {/* Show Less button at bottom when expanded */}
+          {showAll && projectsItems.length > 3 && (
+            <motion.div 
+              className="mt-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="w-full flex flex-col items-center py-4 bg-transparent hover:bg-black/5 text-black transition-all duration-300 rounded-lg"
+                aria-label="Show less projects"
+              >
+                <span className="text-lg font-semibold mb-2">
+                  Show Less
+                </span>
+                <svg
+                  className="w-24 h-8 rotate-180"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 8l-7 7-7-7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 12l-7 7-7-7" />
+                </svg>
+              </button>
+            </motion.div>
+          )}
         </div>
       </div>
     </motion.section>

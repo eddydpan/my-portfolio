@@ -18,6 +18,10 @@ rightAnimation:
   count: 8
 ---
 --- 
+## GitHub Repository:
+This repo contains the source code for the embedded logic ESP-IDF platform.  
+
+**GitHub Link:** [https://github.com/eddydpan/COUCH](https://github.com/eddydpan/COUCH)
 
 ## Hype Video
 ```youtube
@@ -25,9 +29,7 @@ https://youtu.be/RcAKfHjtkew
 ```
 props to Cooper for making the hype video!
 
-## GitHub Link:
-[https://github.com/eddydpan/COUCH](https://github.com/eddydpan/COUCH)
-## Description
+## Overview
 For a passion project during our third year, my friends--Cooper and Tane--and I decided to take up an engineering project together: a remote-controlled motorized rig. Cooper led mechanical, Tane led electrical, and I led software. By no means was this a cheap project; in the end, we spent right up against $450 for the cheapest components that would have this rig in a position to drive.  
 
 This project was a great opportunity for me to apply what I've learned within Software Engineering and move lower into embedded programming. I was working with an ESP32 with the ESP-IDF development environment. After the initial learning curve, I used the [Bluepad32](https://github.com/ricardoquesada/bluepad32) library built off [BTStack](https://github.com/bluekitchen/btstack) to connect the PS4 Controller to the ESP32. 

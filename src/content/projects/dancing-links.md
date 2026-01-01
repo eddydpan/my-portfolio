@@ -15,7 +15,10 @@ rightAnimation:
   color: red
   count: 8
 ---
---- 
+## GitHub Repository
+This repo contains the source code and website for the Dancing Links algorithm visualizer.  
+
+**GitHub Link:** [https://github.com/eddydpan/dancing-links](https://github.com/eddydpan/dancing-links)
 
 ## Overview
 
@@ -32,11 +35,9 @@ I first implemented the algorithm in my most comfortable language, Python, to di
 I finished my beta release by the end of the two-week project period: it features the logic for creating an Exact Cover Problem and stepping through a visualization of the Dancing Links algorithm. I am planning on returning to it now that I have more React and JavaScript experience under my belt to bring it to deployment-ready. I'm hoping to reach Knuth once I have finished this project; although, it has proven more difficult than I expected to reach him as he notes on his personal website that the only emails he'll look at are ones that point out bugs in his books. 
 
 ## Documentation
-GitHub repository: [https://github.com/eddydpan/dancing-links](https://github.com/eddydpan/dancing-links)
-
 Beta Version Visualizer: [https://eddydpan.github.io/dancing-links/](https://eddydpan.github.io/dancing-links/)
 
-Slideshow link: [https://docs.google.com/presentation/d/1AS5-agf4QNf9up3ARq-uBXr2tUAGxle65uFYnTdCQnU/edit?usp=sharing](https://docs.google.com/presentation/d/1AS5-agf4QNf9up3ARq-uBXr2tUAGxle65uFYnTdCQnU/edit?usp=sharing)
+Slideshow link: [https://docs.google.com/presentation/d/1AS5-agf4QNf9up3ARq-uBXr2tUAGxle65uFYnTdCQnU/preview?usp=sharing](https://docs.google.com/presentation/d/1AS5-agf4QNf9up3ARq-uBXr2tUAGxle65uFYnTdCQnU/preview?usp=sharing)
 
 Knuth Lecture: [https://www.youtube.com/watch?v=_cR9zDlvP88](https://www.youtube.com/watch?v=_cR9zDlvP88)
 

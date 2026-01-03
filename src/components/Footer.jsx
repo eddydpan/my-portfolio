@@ -1,3 +1,5 @@
+import NAV_ITEMS from '../config/navigation';
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -13,18 +15,15 @@ export default function Footer() {
 
           {/* Center: Navigation Links */}
           <div className="flex space-x-6 mb-3 md:mb-0">
-            <a
-              href="/#about"
-              className="text-gray-300 hover:text-white transition-colors text-sm"
-            >
-              About
-            </a>
-            <a
-              href="/#projects"
-              className="text-gray-300 hover:text-white transition-colors text-sm"
-            >
-              Projects
-            </a>
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.name}
+                href={item.path}
+                className="text-gray-300 hover:text-white transition-colors text-sm"
+              >
+                {item.name}
+              </a>
+            ))}
           </div>
 
           {/* Right: Social Links */}

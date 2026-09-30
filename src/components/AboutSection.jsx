@@ -1,6 +1,6 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import profilePicture from '../assets/profile.jpg';
+import profilePicture from '../assets/typography-portrait-full.jpg';
 
 export default function AboutSection({ id }) {
   const ref = useRef(null);
@@ -13,16 +13,16 @@ export default function AboutSection({ id }) {
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="py-20 bg-gray-200 text-gray-800"
+      className="py-0 bg-white text-gray-800"
     >
       {/* Content Container - full width with flex */}
       <div className="max-w-6xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-center">
-          {/* About text - left half */}
-          <div className="w-full md:w-1/2 md:pr-12">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-0">
+          {/* About text - left two thirds */}
+          <div className="w-full md:w-2/3 bg-gray-200 p-12 shadow-[0_18px_40px_-14px_rgba(0,0,0,0.45)]">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">About Me</h2>
             <p className="text-base leading-relaxed text-gray-700">
-              Hello! I'm a junior at Olin College of Engineering '27, studying Computer Science
+              Welcome to my portfolio! I'm a senior at Olin College of Engineering studying Computer Science
               and Robotics. I love working on hands-on software projects and exploring a broad 
               range of topics across the stack. I'm drawn to projects with clear impact, as well as 
               side projects that breathe whimsy into learning. Whether I'm tackling a practical 
@@ -30,12 +30,12 @@ export default function AboutSection({ id }) {
             </p>
           </div>
 
-          {/* Profile picture - right half */}
-          <div className="w-full md:w-1/2 flex justify-center md:justify-end mt-8 md:mt-0">
+          {/* Profile picture - right third */}
+          <div className="w-full md:w-1/3 flex justify-center md:justify-end">
             <img
               src={profilePicture}
               alt="Profile"
-              className="rounded-full w-40 h-40 md:w-48 md:h-48 object-cover shadow-lg"
+              className="w-full h-96 object-contain"
             />
           </div>
         </div>

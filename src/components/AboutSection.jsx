@@ -8,6 +8,7 @@ import {
   useTransform,
 } from 'motion/react';
 import GeometricBackdrop from './GeometricBackdrop';
+import TrailLine from './TrailLine';
 import profilePicture from '../assets/typography-portrait-full.jpg';
 
 // Layered shadows: a tight contact shadow, a mid key shadow, and a long soft ambient one
@@ -28,7 +29,7 @@ const UNDER_SHEET_SHADOW = [
  */
 function CardStack({ sheets, fanned, transition, edge, className = '', children }) {
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative z-10 ${className}`}>
       {sheets.map(({ className: sheetClass, rotate, x, y }) => (
         <motion.div
           key={sheetClass}
@@ -64,13 +65,14 @@ export default function AboutSection({ id }) {
     <section
       id={id}
       ref={ref}
-      className="relative isolate overflow-hidden bg-field py-28 md:py-36"
+      className="relative isolate overflow-hidden bg-field pt-28 md:pt-36"
     >
       <GeometricBackdrop />
 
       {/* Two stacks of unequal size: the text card leads, the portrait card sits lower and
-          overlaps its right edge, as if dropped on top of it */}
-      <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row md:items-start">
+          overlaps its right edge, as if dropped on top of it. The row is as tall as the trail's
+          stage (1104:856), so the trail ends exactly at the section's bottom edge. */}
+      <div className="relative max-w-6xl mx-auto px-6 flex flex-col md:flex-row md:items-start md:min-h-[calc((min(100vw,72rem)-3rem)*0.7754)]">
         <CardStack
           className="md:flex-1"
           fanned={isInView}
@@ -111,6 +113,8 @@ export default function AboutSection({ id }) {
             className="block w-full h-auto px-5 pt-5 mix-blend-multiply brightness-[1.03] contrast-[1.05]"
           />
         </CardStack>
+
+        <TrailLine sectionRef={ref} />
       </div>
     </section>
   );

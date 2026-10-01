@@ -7,6 +7,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react'
  * from Illustrator (keep the 1440x900 viewBox, or update it to match).
  * Each shape casts a soft shadow so it reads as cut paper lifted off the field,
  * and drifts at its own rate as the section scrolls past for parallax depth.
+ * (About Me's red disc lives with its trail in TrailLine, fixed beside the cards.)
  */
 export default function GeometricBackdrop() {
   const ref = useRef(null);
@@ -16,7 +17,6 @@ export default function GeometricBackdrop() {
   const range = (distance) => (reduceMotion ? [0, 0] : [distance, -distance]);
   const farY = useTransform(scrollYProgress, [0, 1], range(25));
   const midY = useTransform(scrollYProgress, [0, 1], range(60));
-  const nearY = useTransform(scrollYProgress, [0, 1], range(110));
 
   return (
     <div ref={ref} aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
@@ -40,8 +40,6 @@ export default function GeometricBackdrop() {
           />
           {/* Mid: sun disc behind the portrait, so the head breaks the frame in front of it */}
           <motion.circle style={{ y: midY }} cx="1130" cy="230" r="240" fill="var(--color-sun)" />
-          {/* Near: small red disc counterweighting the left side */}
-          <motion.circle style={{ y: nearY }} cx="150" cy="740" r="54" fill="var(--color-signal)" />
         </g>
       </svg>
     </div>

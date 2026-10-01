@@ -25,3 +25,12 @@ dist-ssr
 
 # PDF.js worker (generated automatically on npm install)
 public/pdf.worker.min.mjs
+
+# Personal notes and AI tooling (Impeccable design context, Claude Code)
+.todo.md
+.impeccable/
+PRODUCT.md
+DESIGN.md
+.claude/
+CLAUDE.md
+CLAUDE.local.md

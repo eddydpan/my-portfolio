@@ -13,6 +13,17 @@
   --color-primary-700: #1D4ED8;
   --color-gray-50: #F9FAFB;
 
+  /* Primary palette — slightly desaturated so color reads as accent, not surface */
+  --color-cobalt: #2F52BE;
+  --color-signal: #D94436;
+  --color-sun: #F4BF45;
+  --color-ink: #161A2E;
+  --color-paper: #FFFFFF;
+  --color-paper-shade: #ECEEF3;
+
+  /* Base field that sections and shapes sit on */
+  --color-field: #E4E8EF;
+
   /* Add other theme variables as needed */
 }
 

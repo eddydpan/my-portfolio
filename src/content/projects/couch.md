@@ -7,7 +7,7 @@ galleryImages:
   - "couch-final-photoshoot"
   - "couch-pre-drive"
   - "couch-debugging-candid"
-learnMoreLink: https://github.com/eddydpan/COUCH"
+learnMoreLink: "https://github.com/eddydpan/COUCH"
 leftAnimation:
   shape: square
   color: blue

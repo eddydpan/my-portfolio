@@ -15,7 +15,8 @@ export default function AnimatedLayout({ children }) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.4 }}
-        className="pt-16"
+        // The home page's landing screen fills the viewport with the header tucked away
+        className={location.pathname === '/' ? '' : 'pt-16'}
       >
         {children}
         <Footer />

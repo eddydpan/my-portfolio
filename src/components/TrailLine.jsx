@@ -9,12 +9,16 @@ import {
 } from 'motion/react';
 
 const MESSAGE = 'follow me!';
-const START_DELAY_MS = 3000; // after the visitor reaches About Me
+const START_DELAY_MS = 1000; // after the visitor reaches About Me
 const DRAW_S = 8;
 const TYPE_MS = 75; // per character, typing in
-const UNTYPE_MS = 230; // per character, untyping once the visitor scrolls on
-const FADE_S = 3;
-const SCROLL_TO_DISMISS = 40; // px of fresh scrolling that starts the fade
+// "follow me!" lives ~1.5s once typed: a brief hold, then it untypes while fading out
+const VOICE_HOLD_MS = 400;
+const UNTYPE_MS = 100; // per character
+const FADE_S = 1.1;
+// The trail erases only after the trail is complete AND "follow me!" has started leaving
+const ERASE_DELAY_MS = 2000;
+const ERASE_S = 6;
 const DASH = 16;
 const GAP = 18;
 
@@ -73,23 +77,37 @@ function useIsDesktop() {
 }
 
 /**
- * Dash pattern that shows only the first `drawn` px of a path: whole dash/gap pairs up to
- * that point, then one gap covering the rest. Unlike a reveal mask, a later stretch of trail
+ * Dash pattern showing only the stretch of path between `from` and `to` px. Dashes stay
+ * anchored to the path (they don't crawl as the window moves), and a later stretch of trail
  * that crosses an earlier one stays hidden until the character actually gets there.
+ * Returns null when nothing is visible.
  */
-function dashesUpTo(drawn, total) {
+function visibleDashes(from, to, total) {
   const period = DASH + GAP;
-  const whole = Math.floor(drawn / period);
+  const round = (n) => Math.round(n * 100) / 100;
   const parts = [];
-  for (let i = 0; i < whole; i++) parts.push(DASH, GAP);
-  parts.push(Math.min(DASH, drawn - whole * period), total);
-  return parts.join(' ');
+  let first = null;
+  let cursor = 0;
+  for (let k = Math.floor(from / period); k * period < to; k++) {
+    const a = Math.max(k * period, from);
+    const b = Math.min(k * period + DASH, to);
+    if (b <= a) continue;
+    if (first === null) first = a;
+    else parts.push(round(a - cursor));
+    parts.push(round(b - a));
+    cursor = b;
+  }
+  if (first === null) return null;
+  // The trailing gap covers the rest; the offset starts the pattern at the first visible dash
+  parts.push(round(total));
+  return { dasharray: parts.join(' '), dashoffset: round(-first) };
 }
 
 /**
  * A small triangle character crosses About Me on its own a few seconds after the visitor
- * arrives, leaving a dashed map trail. As it turns down toward Projects it types
- * "follow me!", which untypes and fades away once the visitor keeps scrolling.
+ * arrives, leaving a dashed map trail that wipes away from its start a few seconds after it
+ * finishes. As it turns down toward Projects it briefly types "follow me!", which untypes and
+ * fades away before the trail starts to disappear.
  */
 export default function TrailLine({ sectionRef }) {
   const reduceMotion = useReducedMotion();
@@ -100,7 +118,8 @@ export default function TrailLine({ sectionRef }) {
   const descentRef = useRef(null);
   const characterRef = useRef(null);
   const stageRef = useRef(null);
-  const progress = useMotionValue(0);
+  const progress = useMotionValue(0); // how far the character has walked
+  const erased = useMotionValue(0); // how much of the trail behind it has faded, from the start
 
   // Desktop: "reached About Me" = the section has risen into the top 40% of the screen.
   // Mobile: the stacked cards fill the screen first, so wait until the trail's own strip is in view.
@@ -115,6 +134,8 @@ export default function TrailLine({ sectionRef }) {
     return () => clearTimeout(id);
   }, [reached, started]);
 
+  // Walk the route once
+  const [drawDone, setDrawDone] = useState(false);
   useEffect(() => {
     if (!started) return;
     const draw = animate(
@@ -122,6 +143,7 @@ export default function TrailLine({ sectionRef }) {
       1,
       reduceMotion ? { duration: 0 } : { duration: DRAW_S, ease: [0.45, 0, 0.4, 1] }
     );
+    draw.then(() => setDrawDone(true));
     return () => draw.stop();
   }, [started, reduceMotion, progress]);
 
@@ -129,25 +151,54 @@ export default function TrailLine({ sectionRef }) {
   const [phase, setPhase] = useState('idle');
   const [typed, setTyped] = useState(0);
   const voiceOpacity = useMotionValue(1);
+  const voiceLeaving = phase === 'fading' || phase === 'gone';
 
-  // Grow the trail and keep the character on its leading tip, pointed along it
-  useMotionValueEvent(progress, 'change', (v) => {
+  // Wipe the trail away from its start, always after "follow me!" has begun to leave
+  useEffect(() => {
+    if (!drawDone || !voiceLeaving) return;
+    let erase;
+    const id = setTimeout(() => {
+      erase = animate(
+        erased,
+        1,
+        reduceMotion ? { duration: 0 } : { duration: ERASE_S, ease: [0.45, 0, 0.4, 1] }
+      );
+    }, ERASE_DELAY_MS);
+    return () => {
+      clearTimeout(id);
+      erase?.stop();
+    };
+  }, [drawDone, voiceLeaving, reduceMotion, erased]);
+
+  // Show the walked-but-not-yet-erased stretch, and keep the character on the leading tip
+  const renderTrail = () => {
     const path = pathRef.current;
     const character = characterRef.current;
     if (!path || !character) return;
     const total = path.getTotalLength();
-    const drawn = v * total;
-    path.setAttribute('stroke-dasharray', dashesUpTo(drawn, total));
+    const drawn = progress.get() * total;
+
+    const dashes = visibleDashes(erased.get() * total, drawn, total);
+    path.style.visibility = dashes ? 'visible' : 'hidden';
+    if (dashes) {
+      path.setAttribute('stroke-dasharray', dashes.dasharray);
+      path.setAttribute('stroke-dashoffset', dashes.dashoffset);
+    }
 
     const at = Math.max(1, drawn);
     const p = path.getPointAtLength(at);
     const back = path.getPointAtLength(Math.max(0, at - 2));
     const angle = (Math.atan2(p.y - back.y, p.x - back.x) * 180) / Math.PI;
     character.setAttribute('transform', `translate(${p.x} ${p.y}) rotate(${angle})`);
-    character.style.opacity = v > 0 ? '1' : '0';
+    character.style.opacity = drawn > 0 ? '1' : '0';
+    return drawn;
+  };
 
+  useMotionValueEvent(progress, 'change', () => {
+    const drawn = renderTrail();
     if (phase === 'idle' && drawn >= descentRef.current.getTotalLength()) setPhase('typing');
   });
+  useMotionValueEvent(erased, 'change', renderTrail);
 
   useEffect(() => {
     if (phase === 'typing') {
@@ -169,16 +220,12 @@ export default function TrailLine({ sectionRef }) {
     }
 
     if (phase === 'shown') {
-      const startY = window.scrollY;
-      const onScroll = () => {
-        if (Math.abs(window.scrollY - startY) > SCROLL_TO_DISMISS) setPhase('fading');
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      return () => window.removeEventListener('scroll', onScroll);
+      const id = setTimeout(() => setPhase('fading'), reduceMotion ? 1500 : VOICE_HOLD_MS);
+      return () => clearTimeout(id);
     }
 
     if (phase === 'fading') {
-      const fade = animate(voiceOpacity, 0, { duration: reduceMotion ? 0.6 : FADE_S, ease: 'easeIn' });
+      const fade = animate(voiceOpacity, 0, { duration: reduceMotion ? 0.6 : FADE_S, ease: 'easeOut' });
       fade.then(() => setPhase('gone'));
       const id = reduceMotion ? null : setInterval(() => setTyped((n) => Math.max(0, n - 1)), UNTYPE_MS);
       return () => {
@@ -220,7 +267,7 @@ export default function TrailLine({ sectionRef }) {
           strokeOpacity={0.85}
           strokeWidth={5.25}
           strokeLinecap="round"
-          strokeDasharray="0 100000"
+          visibility="hidden"
         />
         <g ref={characterRef} style={{ opacity: 0, filter: 'drop-shadow(0 2px 3px rgb(22 26 46 / 0.35))' }}>
           {/* Equilateral, pointing along +x so rotation follows the trail */}

@@ -16,17 +16,14 @@ rightAnimation:
   shape: square
   color: blue
   count: 8
+summary: "A remote-controlled motorized rig that three friends built for about $450. I led the software: ESP32 firmware driven by a PS4 controller."
+repo: "https://github.com/eddydpan/COUCH"
+captions:
+  couch-final-photoshoot: "COUCH at its final photoshoot"
+  couch-pre-drive: "The team with COUCH before a drive"
+  couch-debugging-candid: "Debugging the electronics on the chassis"
 ---
---- 
-## GitHub Repository:
-This repo contains the source code for the embedded logic ESP-IDF platform.  
-
-**GitHub Link:** [https://github.com/eddydpan/COUCH](https://github.com/eddydpan/COUCH)
-
 ## Hype Video
-```youtube
-https://youtu.be/RcAKfHjtkew
-```
 props to Cooper for making the hype video!
 
 ## Overview
@@ -39,6 +36,8 @@ Afterwards, I used two DAC pins from the ESP32 to drive current to the throttle 
 ## Reflections
 We were new to building a mobile base, and there were many ideas we failed to consider earlier for this project. 
 Additionally, We ran into challenges of budgeting, as a project of this size ran us right up against our allotted Passionate Pursuit budget. Our project was tightly constrained by cost--altering how we spec'd out our components and resulting in us going with the cheapest options. 
+
+---
 
 In retrospect, we've identified many aspects of the project we would've changed had we done it again: (1) the motors and ESCs were from E-Bike kits and were the cheapest we could find, and much of our time was sunk into integrating them; (2) we would've organized our timeline to enable mechanical testing post-integration early on instead of going into our "final demo" mechanically untested; and (3) we would explore robust ways to connect the motor to the wheel axel. 
 

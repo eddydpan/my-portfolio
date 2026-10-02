@@ -14,14 +14,13 @@ rightAnimation:
   shape: circle
   color: blue
   count: 8
+summary: "An LC-3 virtual machine in C and an RV32I multicycle processor in SystemVerilog, built from scratch with only the Harris and Harris textbook."
+repo:
+  - label: "LC-3 VM code"
+    url: "https://github.com/olincollege/pVMpkin"
+  - label: "RV32I processor code"
+    url: "https://github.com/darianjimenez/MP4"
 --- 
-
-## GitHub Repository
-These repos contain the source code for the virtual machine and the RISC-V processor.  
-
-**GitHub Links:**
-- LC-3 Virtual Machine: [https://github.com/olincollege/pVMpkin](https://github.com/olincollege/pVMpkin)
-- Unpipelined Multicycle RV32I Processor: [https://github.com/darianjimenez/MP4](https://github.com/darianjimenez/MP4)
 
 ## Overview
 As a challenge in building my understanding of computer architecture, I got my hands dirty with the [RISC-V architecture](https://en.wikipedia.org/wiki/RISC-V). I implemented both a RISC-based LC-3 virtual machine in C and the RV32I instruction set for an Unpipelined Multicycle RISC-V Processor in SystemVerilog from scratch. I didn't use any website tutorials, reference code, or AI tools. It was just us and Harris and Harris' *Digital Design and Computer Architecture* textbook. 

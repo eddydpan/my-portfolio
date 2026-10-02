@@ -15,12 +15,9 @@ rightAnimation:
   shape: triangle
   color: red
   count: 8
+summary: "A mockup of the Iron Man Mark 5 helmet, built over three prototype iterations in half a semester."
+repo: "https://github.com/olincollege/iron-man"
 ---
-## Github Repository  
-This repo contains the source code for the Arduino embedded logic and high-level Raspberry Pi orchestrator.  
-
-**Github Link:** [https://github.com/olincollege/iron-man](https://github.com/olincollege/iron-man)
-
 ## Overview
 Over the course of half a semester my Sophomore Fall, my friends and I built this mockup of the Iron Man Mark-5 helmet. We wanted it to have all the features the helmet has from the movies--especially the AI voice assistant, AR Heads-Up Display (HUD), and mask actuation. After many sleepless nights, three prototype iterations, and a rollercoaster of emotions, I present to you our take on the MK5 Helmet.   
 

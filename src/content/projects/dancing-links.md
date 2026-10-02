@@ -14,18 +14,14 @@ rightAnimation:
   shape: square
   color: red
   count: 8
+summary: "An animated visualizer for Knuth's Dancing Links algorithm, built after he asked for one in a lecture."
+repo: "https://github.com/eddydpan/dancing-links"
 ---
-## GitHub Repository
-This repo contains the source code and website for the Dancing Links algorithm visualizer.  
-
-**GitHub Link:** [https://github.com/eddydpan/dancing-links](https://github.com/eddydpan/dancing-links)
-
 ## Overview
 
 For my Data Structures and Algorithms final project, I did a deep dive on the 'Dancing Links' algorithm by Dr. Don Knuth, the author of the renowned *The Art of Computer Programming* series. During my search, I watched his [lecture](https://www.youtube.com/watch?v=_cR9zDlvP88). Something caught my ear at [this timestamp](https://youtu.be/_cR9zDlvP88?si=9DJrhUNgDw6jaA7j&t=1777): Knuth states  
 
-    "I'm still waiting on somebody to write an app that takes this algorithm and an exact cover 
-    problem, and somehow animates it... I wish I had a good visualization of the process."   
+> "I'm still waiting on somebody to write an app that takes this algorithm and an exact cover problem, and somehow animates it... I wish I had a good visualization of the process."
 
 Since this lecture was recorded back in 2018, I imagined someone would've already taken up the esteemed professor's call-to-action. I began scouring the internet for any form of dynamic visualizer for the Dancing Links, yet nothing came up after pages of Google and repositories on GitHub. I was elated to find the perfect project to work on.  
 

@@ -5,6 +5,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import { getProjectBySlug } from '../utils/loadProjects';
 import DefaultLayout from './project/DefaultLayout';
+import { PrimaryLink } from './project/controls';
 
 // Optional per-project layouts sit beside their writeups: couch.md is laid out by couch.jsx
 const layoutModules = import.meta.glob('/src/content/projects/*.jsx', { eager: true, import: 'default' });
@@ -20,12 +21,9 @@ function ProjectNotFound() {
         <p className="mt-4 text-lg leading-relaxed text-ink/75">
           The link may be old, or the project may have been renamed. Every project is listed on the home page.
         </p>
-        <HashLink
-          to="/#projects"
-          className="mt-8 inline-flex items-center bg-ink px-5 pt-3.5 pb-3 font-semibold text-paper hover:bg-cobalt hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cobalt"
-        >
+        <PrimaryLink as={HashLink} to="/#projects" icon="right" className="mt-10">
           See all projects
-        </HashLink>
+        </PrimaryLink>
       </div>
     </div>
   );

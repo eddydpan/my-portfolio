@@ -1,12 +1,14 @@
-import { Children, cloneElement, isValidElement, useEffect, useRef, useState } from 'react';
+import { Children, cloneElement, isValidElement, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import { motion, useReducedMotion } from 'motion/react';
 import { getAllProjects, getProjectBySlug } from '../../utils/loadProjects';
 import PROJECT_ORDER from '../../config/projectOrder';
 import AnimatedShapes from '../AnimatedShapes';
-import { LIFTED_SHADOW, RAISED_SHADOW, SETTLE_EASE } from '../../lib/depth';
+import { RAISED_SHADOW, SETTLE_EASE } from '../../lib/depth';
 import { ProjectContext } from './ProjectContext';
+import { ArrowIcon, FAN_EASE, PrimaryLink, ShapeGlyph, ShapeLink } from './controls';
+import FieldShapes from './FieldShapes';
 import { linkLabel } from './media';
 
 // The writeups name their margin colors loosely; the page keeps them inside the site palette
@@ -20,20 +22,6 @@ const PALETTE = {
   cyan: 'var(--color-cobalt)',
   purple: 'var(--color-cobalt)',
 };
-
-function ArrowIcon({ direction = 'right', className = 'h-4 w-4' }) {
-  const d = {
-    right: 'M5 12h14m-6-6 6 6-6 6',
-    left: 'M19 12H5m6-6-6 6 6 6',
-    out: 'M7 17 17 7m-8 0h8v8',
-  }[direction];
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}
-      strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d={d} />
-    </svg>
-  );
-}
 
 function MarginShapes({ config, side }) {
   if (!config) return null;
@@ -82,45 +70,72 @@ function siblingProjects(slug) {
   };
 }
 
-function SiblingLink({ project, direction }) {
-  const [hovered, setHovered] = useState(false);
-  const reduceMotion = useReducedMotion();
+function SiblingLink({ project, direction, accent, shape }) {
   if (!project) return <div className="hidden md:block" />;
   const isNext = direction === 'next';
 
   return (
-    <motion.div
-      className={isNext ? 'md:col-start-2' : ''}
-      animate={{ y: hovered && !reduceMotion ? -3 : 0, boxShadow: hovered ? LIFTED_SHADOW : RAISED_SHADOW }}
-      transition={{ duration: 0.4, ease: SETTLE_EASE }}
-      style={{ boxShadow: RAISED_SHADOW }}
+    <Link
+      to={`/projects/${project.slug}`}
+      className={`group relative isolate block text-ink hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-[6px] focus-visible:outline-cobalt ${
+        isNext ? 'md:col-start-2' : ''
+      }`}
     >
-      <Link
-        to={`/projects/${project.slug}`}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onFocus={() => setHovered(true)}
-        onBlur={() => setHovered(false)}
-        className={`flex h-full items-center gap-5 bg-paper px-7 py-6 text-ink ring-1 ring-ink/[0.06] hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cobalt ${
+      {/* The accent sheet waits underneath and fans out toward the direction of travel */}
+      <span
+        aria-hidden="true"
+        className={`absolute inset-0 -z-10 transition-transform duration-500 ${FAN_EASE} motion-reduce:transition-none ${
+          isNext
+            ? 'group-hover:[transform:translate(10px,10px)_rotate(2.5deg)]'
+            : 'group-hover:[transform:translate(-10px,10px)_rotate(-2.5deg)]'
+        }`}
+        style={{ background: accent }}
+      />
+      <span
+        className={`flex h-full items-center gap-5 bg-paper px-7 py-6 ring-1 ring-ink/[0.06] transition-[transform,box-shadow] duration-300 ease-out group-hover:-translate-y-1 motion-reduce:transition-none ${
           isNext ? 'flex-row-reverse text-right' : ''
         }`}
+        style={{ boxShadow: RAISED_SHADOW }}
       >
-        <ArrowIcon direction={isNext ? 'right' : 'left'} className="h-6 w-6 shrink-0 text-cobalt" />
-        <span className="min-w-0 text-xl font-bold tracking-tight text-balance">
+        <ArrowIcon
+          direction={isNext ? 'right' : 'left'}
+          className={`h-6 w-6 shrink-0 text-ink transition-transform duration-300 ${isNext ? 'group-hover:translate-x-1' : 'group-hover:-translate-x-1'}`}
+        />
+        <span className="min-w-0 flex-1">
           <span className="sr-only">{isNext ? 'Next project: ' : 'Previous project: '}</span>
-          {project.title}
+          <span className="text-xl font-bold tracking-tight text-balance">{project.title}</span>
         </span>
-      </Link>
-    </motion.div>
+        <ShapeGlyph
+          shape={shape}
+          color={accent}
+          className={`h-3.5 w-3.5 shrink-0 transition-transform duration-500 ${FAN_EASE} group-hover:rotate-[135deg] group-hover:scale-125 motion-reduce:transition-none`}
+        />
+      </span>
+    </Link>
   );
+}
+
+// Gap above a section: parts of one writeup section sit close together, full-width breaks get
+// room on both sides, and any section can ask for `space="tight" | "normal" | "loose"`
+const SPACE = { tight: 'mt-10 md:mt-14', normal: 'mt-16 md:mt-24', loose: 'mt-24 md:mt-36' };
+
+function gapAbove(child, previous) {
+  if (!previous) return '';
+  if (child.props.space) return SPACE[child.props.space] ?? SPACE.normal;
+  const breaks = (el) => el.type?.isBreak;
+  if (breaks(child) || breaks(previous)) return SPACE.loose;
+  const sameSection = child.props.section && child.props.section === previous.props.section;
+  return sameSection ? SPACE.tight : SPACE.normal;
 }
 
 /**
  * The frame every project page shares: title band, links, margin shapes, and the way out.
  * Children are the page's sections, top to bottom. `hero` is optional media for the title band;
- * a HeroImage sits beside the title and a HeroVideo runs full width beneath it.
+ * a HeroImage sits beside the title and a HeroVideo runs full width beneath it. Large pale
+ * shapes fill the field behind the sections in the page's margin shape; `backdrop` picks another
+ * shape (square, circle, triangle), or false turns them off.
  */
-export default function ProjectPage({ slug: slugProp, hero = null, children }) {
+export default function ProjectPage({ slug: slugProp, hero = null, backdrop, children }) {
   const params = useParams();
   const slug = slugProp ?? params.slug;
   const project = getProjectBySlug(slug);
@@ -131,11 +146,12 @@ export default function ProjectPage({ slug: slugProp, hero = null, children }) {
   const { title, summary, category } = frontmatter;
   const tags = category ? category.split('|').map((t) => t.trim()).filter(Boolean) : [];
   const links = projectLinks(frontmatter);
-  const { previous, next } = siblingProjects(slug);
+  const siblings = siblingProjects(slug);
   const heroLayout = hero?.props?.layout ?? hero?.type?.heroLayout ?? 'side';
   const heroBeside = hero && heroLayout === 'side';
-  // The page's one accent color, taken from its margin shapes
+  // The page's accent color and shape, taken from its margin shapes
   const accent = PALETTE[frontmatter.leftAnimation?.color] ?? PALETTE.blue;
+  const shape = frontmatter.leftAnimation?.shape ?? 'square';
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -155,20 +171,31 @@ export default function ProjectPage({ slug: slugProp, hero = null, children }) {
     if (unused.length) console.warn(`[${file}.md] Not shown on the page: ${unused.join(', ')}`);
   }, [sections, usedParts, file]);
 
-  // Split sections without an explicit side alternate text left, right, left...
+  // Split sections without an explicit side alternate text left, right, left..., and each
+  // section is spaced by how it relates to the one before it
   let splitCount = 0;
-  const body = Children.map(children, (child) => {
-    if (!isValidElement(child) || !child.type?.alternates) return child;
-    const side = child.props.side ?? (splitCount % 2 === 0 ? 'left' : 'right');
-    splitCount += 1;
-    return cloneElement(child, { side });
+  let previous = null;
+  const body = Children.toArray(children).filter(isValidElement).map((child) => {
+    let element = child;
+    if (child.type?.alternates) {
+      const side = child.props.side ?? (splitCount % 2 === 0 ? 'left' : 'right');
+      splitCount += 1;
+      element = cloneElement(child, { side });
+    }
+    const wrapped = (
+      <div key={child.key} className={gapAbove(child, previous)}>
+        {element}
+      </div>
+    );
+    previous = child;
+    return wrapped;
   });
 
   const enter = (delay) =>
     reduceMotion ? { duration: 0 } : { duration: 0.9, ease: SETTLE_EASE, delay };
 
   return (
-    <ProjectContext.Provider value={{ frontmatter, sections, usedParts, file, accent }}>
+    <ProjectContext.Provider value={{ frontmatter, sections, usedParts, file, accent, shape }}>
       <div className="relative isolate overflow-hidden bg-field text-ink selection:bg-sun/60 selection:text-ink">
         <MarginShapes config={frontmatter.leftAnimation} side="left" />
         <MarginShapes config={frontmatter.rightAnimation} side="right" />
@@ -205,23 +232,14 @@ export default function ProjectPage({ slug: slugProp, hero = null, children }) {
                 </ul>
               )}
               {links.length > 0 && (
-                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-                  {links.map((link, i) => (
-                    <a
-                      key={link.url}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={
-                        i === 0
-                          ? 'inline-flex items-center gap-2 bg-ink px-5 pt-3.5 pb-3 font-semibold text-paper transition-colors hover:bg-cobalt hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cobalt'
-                          : 'inline-flex items-center gap-1.5 py-2 font-semibold text-ink underline decoration-ink/25 decoration-[1.5px] underline-offset-4 hover:text-cobalt hover:decoration-cobalt focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cobalt'
-                      }
-                    >
-                      {link.label}
-                      <ArrowIcon direction="out" className="h-4 w-4" />
-                    </a>
-                  ))}
+                <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
+                  {links.map((link, i) =>
+                    i === 0 ? (
+                      <PrimaryLink key={link.url} href={link.url}>{link.label}</PrimaryLink>
+                    ) : (
+                      <ShapeLink key={link.url} href={link.url}>{link.label}</ShapeLink>
+                    )
+                  )}
                 </div>
               )}
             </motion.div>
@@ -232,11 +250,14 @@ export default function ProjectPage({ slug: slugProp, hero = null, children }) {
           {hero && !heroBeside && <div className="mt-12 md:mt-16">{hero}</div>}
         </header>
 
-        <main className="mx-auto flex max-w-6xl flex-col gap-14 px-6 md:gap-24">{body}</main>
+        <main className="relative mx-auto max-w-6xl px-6">
+          {backdrop !== false && <FieldShapes shape={typeof backdrop === 'string' ? backdrop : shape} />}
+          {body}
+        </main>
 
         <nav aria-label="More projects" className="mx-auto grid max-w-6xl gap-5 px-6 pt-24 pb-24 md:grid-cols-2 md:gap-10 md:pt-32 md:pb-32">
-          <SiblingLink project={previous} direction="previous" />
-          <SiblingLink project={next} direction="next" />
+          <SiblingLink project={siblings.previous} direction="previous" accent={accent} shape={shape} />
+          <SiblingLink project={siblings.next} direction="next" accent={accent} shape={shape} />
         </nav>
       </div>
     </ProjectContext.Provider>

@@ -16,6 +16,8 @@
   /* Primary palette — slightly desaturated so color reads as accent, not surface */
   --color-cobalt: #2F52BE;
   --color-signal: #D94436;
+  /* Deeper signal for panels that carry white body text (5.3:1; signal itself is 4.3:1) */
+  --color-signal-deep: #C23B2E;
   --color-sun: #F4BF45;
   --color-ink: #161A2E;
   --color-paper: #FFFFFF;

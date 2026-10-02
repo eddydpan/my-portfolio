@@ -28,3 +28,25 @@ export const UNDER_SHEET_SHADOW = [
   '0 8px 16px -6px rgb(22 26 46 / 0.22)',
   '0 28px 48px -16px rgb(22 26 46 / 0.30)',
 ].join(', ');
+
+// Highest step, for the one surface a page wants to float above the rest
+export const FLOATING_SHADOW = [
+  '0 3px 6px rgb(22 26 46 / 0.10)',
+  '0 24px 44px -14px rgb(22 26 46 / 0.30)',
+  '0 60px 100px -36px rgb(22 26 46 / 0.40)',
+].join(', ');
+
+export const ELEVATION = {
+  flat: RESTING_SHADOW,
+  raised: RAISED_SHADOW,
+  lifted: LIFTED_SHADOW,
+  floating: FLOATING_SHADOW,
+};
+
+// The same steps as drop-shadow filters, for clipped shapes that can't carry a box-shadow
+export const ELEVATION_FILTER = {
+  flat: 'drop-shadow(0 2px 3px rgb(22 26 46 / 0.08))',
+  raised: 'drop-shadow(0 10px 12px rgb(22 26 46 / 0.14)) drop-shadow(0 24px 28px rgb(22 26 46 / 0.12))',
+  lifted: 'drop-shadow(0 14px 16px rgb(22 26 46 / 0.18)) drop-shadow(0 34px 36px rgb(22 26 46 / 0.16))',
+  floating: 'drop-shadow(0 20px 22px rgb(22 26 46 / 0.20)) drop-shadow(0 50px 50px rgb(22 26 46 / 0.20))',
+};

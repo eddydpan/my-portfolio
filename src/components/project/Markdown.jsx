@@ -3,12 +3,16 @@ import remarkGfm from 'remark-gfm';
 import { resolveImageSrc } from '../../utils/loadProjects';
 import PdfViewer from '../PdfViewer';
 import { youtubeEmbedUrl } from './media';
+import { toneOf } from './tones';
 
-// Long bare URLs in the writeups would otherwise push the page wider than a phone
+// Colors come from the surface the text sits on (see tones.js) through these custom properties.
+// Long bare URLs would otherwise push the page wider than a phone, hence overflow-wrap.
 const LINK_CLASS =
-  'font-semibold text-cobalt underline decoration-cobalt/35 decoration-[1.5px] underline-offset-[3px] ' +
-  'hover:text-cobalt hover:decoration-cobalt [overflow-wrap:anywhere] rounded-[1px] ' +
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cobalt';
+  'font-semibold underline decoration-[1.5px] underline-offset-[3px] [color:var(--md-link)] ' +
+  '[text-decoration-color:color-mix(in_srgb,var(--md-link)_40%,transparent)] ' +
+  'hover:[color:var(--md-link)] hover:[text-decoration-color:var(--md-link)] [overflow-wrap:anywhere] rounded-[1px] ' +
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:[outline-color:var(--md-link)]';
+const STRONG = '[color:var(--md-strong)]';
 
 // A bare URL used as its own link text, shortened to read like a link: host plus the start of the path
 function shortUrl(href) {
@@ -30,14 +34,14 @@ function domProps(props) {
 }
 
 const components = {
-  h2: (props) => <h2 className="mt-10 mb-3 text-2xl font-bold tracking-tight text-ink first:mt-0" {...domProps(props)} />,
-  h3: (props) => <h3 className="mt-8 mb-2 text-xl font-bold tracking-tight text-ink first:mt-0" {...domProps(props)} />,
-  h4: (props) => <h4 className="mt-6 mb-2 text-lg font-bold text-ink first:mt-0" {...domProps(props)} />,
+  h2: (props) => <h2 className={`mt-10 mb-3 text-[1.25em] font-bold tracking-tight ${STRONG} first:mt-0`} {...domProps(props)} />,
+  h3: (props) => <h3 className={`mt-8 mb-2 text-[1.15em] font-bold tracking-tight ${STRONG} first:mt-0`} {...domProps(props)} />,
+  h4: (props) => <h4 className={`mt-6 mb-2 text-[1.05em] font-bold ${STRONG} first:mt-0`} {...domProps(props)} />,
   p: (props) => <p className="mb-4 last:mb-0" {...domProps(props)} />,
-  ul: (props) => <ul className="mb-4 list-disc space-y-2 pl-5 marker:text-cobalt last:mb-0" {...domProps(props)} />,
-  ol: (props) => <ol className="mb-4 list-decimal space-y-2 pl-5 marker:text-cobalt last:mb-0" {...domProps(props)} />,
+  ul: (props) => <ul className="mb-4 list-disc space-y-2 pl-5 marker:[color:var(--md-mark)] last:mb-0" {...domProps(props)} />,
+  ol: (props) => <ol className="mb-4 list-decimal space-y-2 pl-5 marker:[color:var(--md-mark)] last:mb-0" {...domProps(props)} />,
   li: (props) => <li className="pl-1" {...domProps(props)} />,
-  strong: (props) => <strong className="font-bold text-ink" {...domProps(props)} />,
+  strong: (props) => <strong className={`font-bold ${STRONG}`} {...domProps(props)} />,
   a: (props) => {
     const { href, children } = props;
     const bare = typeof children === 'string' && children.trim() === href;
@@ -49,7 +53,7 @@ const components = {
   },
   blockquote: (props) => (
     <blockquote
-      className="my-6 border-y border-ink/10 py-5 text-xl font-semibold leading-snug text-ink md:text-2xl"
+      className={`my-6 border-y border-current/15 py-5 text-[1.25em] font-semibold leading-snug ${STRONG}`}
       {...domProps(props)}
     />
   ),
@@ -64,7 +68,7 @@ const components = {
     const isBlock = Boolean(className) || String(children).includes('\n');
 
     if (!isBlock) {
-      return <code className="bg-paper-shade px-1.5 py-0.5 font-mono text-[0.9em] text-ink" {...domProps(props)}>{children}</code>;
+      return <code className="bg-current/10 px-1.5 py-0.5 font-mono text-[0.9em]" {...domProps(props)}>{children}</code>;
     }
     if (lang === 'pdf' || lang === 'pdf-url') {
       return <PdfViewer src={resolveImageSrc(content) || content} />;
@@ -91,15 +95,29 @@ const components = {
 };
 
 const VARIANTS = {
-  body: 'text-[1.0625rem] leading-[1.75] text-ink/80',
-  lead: 'text-2xl font-semibold leading-snug text-ink md:text-[2rem] md:leading-[1.3]',
-  caption: 'text-sm leading-snug text-ink/70',
+  sm: 'text-base leading-[1.7]',
+  md: 'text-[1.0625rem] leading-[1.75]',
+  lg: 'text-[1.125rem] leading-[1.75] md:text-[1.25rem]',
+  lead: 'text-2xl font-semibold leading-snug md:text-[2rem] md:leading-[1.3]',
+  caption: 'text-sm leading-snug',
 };
 
-/** Writeup text in the project page's reading style: `body`, `lead` for pull quotes, or `caption`. */
-export default function Markdown({ children, variant = 'body' }) {
+/**
+ * Writeup text in the project page's reading style. `variant` is a body size (sm, md, lg),
+ * `lead` for pull quotes, or `caption`; `tone` is the surface it sits on, which sets its colors.
+ */
+export default function Markdown({ children, variant = 'md', tone = 'paper' }) {
+  const colors = toneOf(tone);
   return (
-    <div className={VARIANTS[variant]}>
+    <div
+      className={VARIANTS[variant] ?? VARIANTS.md}
+      style={{
+        color: variant === 'lead' ? colors.strong : colors.text,
+        '--md-strong': colors.strong,
+        '--md-link': colors.link,
+        '--md-mark': colors.mark,
+      }}
+    >
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {children}
       </ReactMarkdown>

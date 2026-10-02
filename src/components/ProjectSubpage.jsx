@@ -1,223 +1,46 @@
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { HashLink } from 'react-router-hash-link';
 import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
-import { getProjectBySlug, resolveImageSrc, getAllProjects } from '../utils/loadProjects';
-import BaseSubpage from './subpages/BaseSubpage';
-import PdfViewer from './PdfViewer';
-import AnimatedShapes from './AnimatedShapes';
-import PROJECT_ORDER from '../config/projectOrder';
+import { getProjectBySlug } from '../utils/loadProjects';
+import DefaultLayout from './project/DefaultLayout';
+
+// Optional per-project layouts sit beside their writeups: couch.md is laid out by couch.jsx
+const layoutModules = import.meta.glob('/src/content/projects/*.jsx', { eager: true, import: 'default' });
+const layouts = Object.fromEntries(
+  Object.entries(layoutModules).map(([path, Layout]) => [path.split('/').pop().replace(/\.jsx$/, ''), Layout])
+);
+
+function ProjectNotFound() {
+  return (
+    <div className="flex min-h-[calc(100svh-4rem)] items-center bg-field px-6 py-24">
+      <div className="mx-auto max-w-xl text-center">
+        <h1 className="text-4xl font-bold tracking-tight text-ink md:text-5xl">This project isn't here</h1>
+        <p className="mt-4 text-lg leading-relaxed text-ink/75">
+          The link may be old, or the project may have been renamed. Every project is listed on the home page.
+        </p>
+        <HashLink
+          to="/#projects"
+          className="mt-8 inline-flex items-center bg-ink px-5 pt-3.5 pb-3 font-semibold text-paper hover:bg-cobalt hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cobalt"
+        >
+          See all projects
+        </HashLink>
+      </div>
+    </div>
+  );
+}
 
 export default function ProjectSubpage() {
   const { slug } = useParams();
-  const [content, setContent] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Calculate previous and next projects based on PROJECT_ORDER
-  const allProjects = getAllProjects();
-  const effectiveOrder = PROJECT_ORDER.length > 0 ? PROJECT_ORDER : allProjects.map(p => p.slug);
-  
-  // Build ordered project list
-  const orderedProjects = effectiveOrder
-    .map(slug => allProjects.find(p => p.slug === slug))
-    .filter(Boolean);
-  
-  const currentIndex = orderedProjects.findIndex(p => p.slug === slug);
-  const previousProject = currentIndex > 0 ? orderedProjects[currentIndex - 1] : null;
-  const nextProject = currentIndex < orderedProjects.length - 1 ? orderedProjects[currentIndex + 1] : null;
+  const project = getProjectBySlug(slug);
 
   useEffect(() => {
-    const loadProject = () => {
-      try {
-        setLoading(true);
-        
-        // Get project data from pre-loaded projects
-        const projectData = getProjectBySlug(slug);
-        
-        if (!projectData) {
-          setError('Project not found');
-          setLoading(false);
-          return;
-        }
-        
-        setContent(projectData);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error loading project:', err);
-        setError('Project not found');
-        setLoading(false);
-      }
-    };
-
-    loadProject();
-  }, [slug]);
-
-  useEffect(() => {
-    // Scroll to top when component mounts or slug changes
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [slug]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading...</div>
-      </div>
-    );
-  }
+  if (!project) return <ProjectNotFound />;
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-xl text-red-600">{error}</div>
-      </div>
-    );
-  }
-
-  const { frontmatter, markdownBody } = content;
-
-  // Custom markdown description component with inline styles and image support
-  const MarkdownDescription = () => (
-    <div className="markdown-content">
-      <ReactMarkdown 
-        remarkPlugins={[remarkGfm]}
-        components={{
-          h1: ({node, ...props}) => <h1 className="text-3xl font-bold text-gray-800 mt-8 mb-4" {...props} />,
-          h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-gray-800 mt-6 mb-3" {...props} />,
-          h3: ({node, ...props}) => <h3 className="text-xl font-bold text-gray-800 mt-4 mb-2" {...props} />,
-          h4: ({node, ...props}) => <h4 className="text-lg font-bold text-gray-800 mt-3 mb-2" {...props} />,
-          p: ({node, ...props}) => <p className="text-gray-600 mb-4 leading-relaxed" {...props} />,
-          ul: ({node, ...props}) => <ul className="list-disc list-inside text-gray-600 mb-4 space-y-2" {...props} />,
-          ol: ({node, ...props}) => <ol className="list-decimal list-inside text-gray-600 mb-4 space-y-2" {...props} />,
-          li: ({node, ...props}) => <li className="text-gray-600" {...props} />,
-          a: ({node, ...props}) => <a className="text-indigo-500 hover:text-indigo-600 underline" {...props} />,
-          img: ({node, src, ...props}) => {
-            // Resolve image src through imageMap if it's a key name
-            const resolvedSrc = resolveImageSrc(src);
-            return <img src={resolvedSrc} className="w-full rounded-lg shadow-md my-4" {...props} />;
-          },
-          video: ({node, src, ...props}) => {
-            // Resolve video src through imageMap if it's a key name
-            const resolvedSrc = resolveImageSrc(src);
-            return (
-              <video 
-                controls 
-                className="w-full rounded-lg shadow-md my-4"
-                {...props}
-              >
-                <source src={resolvedSrc} type="video/mp4" />
-                Your browser doesn't support video playback.
-              </video>
-            );
-          },
-          code: ({node, inline, className, children, ...props}) => {
-            // Render inline code normally
-            if (inline) {
-              return <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono" {...props}>{children}</code>;
-            }
-
-            // Block code: detect language from className (e.g. 'language-youtube')
-            const lang = className ? className.replace('language-', '') : '';
-            const codeContent = String(children).trim();
-            // Support fenced blocks with language 'pdf' or 'pdf-url'
-            if (lang === 'pdf' || lang === 'pdf-url') {
-              // codeContent can be a full URL or an app-relative path (e.g. /docs/file.pdf)
-              // or a key that resolveImageSrc can resolve (if you import PDF into assets and register it).
-              const resolved = resolveImageSrc(codeContent) || codeContent;
-              return (
-                <div className="w-full my-4">
-                  <PdfViewer src={resolved} />
-                </div>
-              );
-            }
-
-            // Support fenced blocks with language 'youtube' or 'youtube-url'
-            if (lang === 'youtube' || lang === 'youtube-url') {
-              // Accept either a raw video id or a full YouTube URL; extract ID if needed
-              let id = codeContent;
-              const urlMatch = codeContent.match(/(?:youtu\.be\/([A-Za-z0-9_-]{6,})|v=([A-Za-z0-9_-]{6,})|embed\/([A-Za-z0-9_-]{6,}))/);
-              if (urlMatch) {
-                id = urlMatch[1] || urlMatch[2] || urlMatch[3] || id;
-              }
-
-              const src = `https://www.youtube.com/embed/${id}`;
-
-              return (
-                <div className="w-full my-4" style={{ position: 'relative', paddingTop: '56.25%' }}>
-                  <iframe
-                    src={src}
-                    title="YouTube video"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                  />
-                </div>
-              );
-            }
-
-            // Fallback: render regular code block
-            return (
-              <pre className="bg-gray-100 p-4 rounded text-sm font-mono overflow-x-auto"><code {...props}>{codeContent}</code></pre>
-            );
-          },
-        }}
-      >
-        {markdownBody}
-      </ReactMarkdown>
-    </div>
-  );
-
-  const CombinedDescription = () => (
-    <div>
-      <MarkdownDescription />
-      {frontmatter.pdf && (
-        <div className="mt-6">
-          <PdfViewer src={frontmatter.pdf} />
-        </div>
-      )}
-    </div>
-  );
-
-  // Build animation components from frontmatter config
-  const buildAnimationComponent = (config, isMargin = false) => {
-    if (!config) return null;
-    
-    // For margin animations, constrain spreadX to fit within the margin (w-24 = ~96px)
-    // spreadX: 0-100 means 0-100% of the 96px margin width
-    // For banner, use full width
-    const spreadX = config.spreadX || (isMargin ? { min: 10, max: 90 } : { min: 0, max: 100 });
-    
-    return (
-      <AnimatedShapes
-        shape={config.shape || 'triangle'}
-        color={config.color || 'red'}
-        count={config.count || 12}
-        orientation={config.orientation || (isMargin ? 'vertical' : 'horizontal')}
-        height="100%"
-        spreadX={spreadX}
-        spreadY={config.spreadY || { min: 0, max: 100 }}
-      />
-    );
-  };
-
-  const leftAnimation = buildAnimationComponent(frontmatter.leftAnimation, true);
-  const rightAnimation = buildAnimationComponent(frontmatter.rightAnimation, true);
-  const bannerBackground = buildAnimationComponent(frontmatter.bannerBackground, false);
-
-  return (
-    <BaseSubpage
-      title={frontmatter.title}
-      galleryImages={frontmatter.galleryImages || []}
-      customDescription={<CombinedDescription />}
-      learnMoreLink={frontmatter.learnMoreLink}
-      leftAnimation={leftAnimation}
-      rightAnimation={rightAnimation}
-      bannerBackground={bannerBackground}
-      previousProject={previousProject}
-      nextProject={nextProject}
-    />
-  );
+  const Layout = layouts[project.file];
+  return Layout ? <Layout key={slug} /> : <DefaultLayout key={slug} slug={slug} />;
 }

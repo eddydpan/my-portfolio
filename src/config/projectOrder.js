@@ -7,7 +7,7 @@ export const PROJECT_ORDER = [
   'digital-sequencer',
   'risc-v',
   'iron-man',
-  'home-automation'
+  'homelab'
 ];
 
 export default PROJECT_ORDER;
